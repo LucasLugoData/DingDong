@@ -66,9 +66,8 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
                         const SizedBox(height: 4),
                         LinearProgressIndicator(
                           value: progress.xpEnNivel / progress.xpNecesaria,
-                          semanticsLabel: 'Experiencia',
-                          semanticsValue:
-                              '${progress.xpEnNivel} / ${progress.xpNecesaria} XP',
+                          semanticsLabel:
+                              'Experiencia: ${progress.xpEnNivel} de ${progress.xpNecesaria} XP',
                           color: AppColors.gold,
                           backgroundColor: AppColors.line,
                         ),

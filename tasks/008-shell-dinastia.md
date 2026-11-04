@@ -1,6 +1,6 @@
 # 008 · Shell Dinastía: 5 pestañas y barra superior
 
-Estado: PENDIENTE
+Estado: APROBADA
 Peldaño inicial: 3
 Revisión: no
 
@@ -28,3 +28,5 @@ Navegación del Modo Dinastía y barra superior común (DISENO.md "UI").
 ## Dudas
 
 ## Resultado
+
+Aprobada por `flutter test test/dynasty_shell_test.dart && flutter analyze lib test` en el peldaño 4 (gpt-6.1-sol high).
