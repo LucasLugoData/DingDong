@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -7,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'models.dart';
 import 'srs.dart';
 import 'game/player.dart';
+import 'game/xp.dart';
 
 /// Estado global: vocabulario, progreso, notas, favoritas y ajustes.
 class AppStore extends ChangeNotifier {
@@ -132,11 +134,32 @@ class AppStore extends ChangeNotifier {
     if (player.seen.add(id)) _savePlayer();
   }
 
-  int grantXp(String gameMode, int baseXp) {
-    player.xp += baseXp;
+  String? get bonusMode {
+    final now = _clock();
+    final last = player.lastBonusAt;
+    if (last != null && now.difference(last) < const Duration(hours: 2)) return null;
+    if (player.bonusMode == null) {
+      player.bonusMode = leastUsedMode(player.gamesPlayed, _random);
+      _savePlayer();
+    }
+    return player.bonusMode;
+  }
+
+  DateTime Function() _clock = DateTime.now;
+  final Random _random = Random();
+
+  int grantXp(String gameMode, int baseXp, {DateTime Function()? now}) {
+    if (now != null) _clock = now;
+    final bonus = bonusMode == gameMode;
+    final awarded = bonus ? baseXp * 2 : baseXp;
+    player.xp += awarded;
     player.gamesPlayed[gameMode] = (player.gamesPlayed[gameMode] ?? 0) + 1;
+    if (bonus) {
+      player.lastBonusAt = (now ?? _clock)();
+      player.bonusMode = null;
+    }
     _savePlayer();
-    return baseXp;
+    return awarded;
   }
 
   void unlockMedal(String id) {
@@ -230,3 +253,4 @@ class AppStore extends ChangeNotifier {
   void _saveCustom() =>
       _prefs.setString(_kCustom, jsonEncode(_custom.map((w) => w.toJson()).toList()));
 }
+
