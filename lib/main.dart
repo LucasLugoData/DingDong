@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'dynasty/dynasty_shell.dart';
 import 'screens/home_screen.dart';
 import 'screens/onboarding_screen.dart';
 import 'screens/reading_screen.dart';
@@ -7,6 +8,8 @@ import 'screens/word_list_screen.dart';
 import 'game/player.dart';
 import 'store.dart';
 import 'theme.dart';
+
+export 'dynasty/dynasty_shell.dart';
 
 late AppStore store;
 
@@ -32,15 +35,6 @@ class ZikaApp extends StatelessWidget {
         AppMode.dynasty => const DynastyShell(),
       },
     ),
-  );
-}
-
-class DynastyShell extends StatelessWidget {
-  const DynastyShell({super.key});
-
-  @override
-  Widget build(BuildContext context) => const Scaffold(
-    body: Center(child: Text('Modo Dinastía')),
   );
 }
 
