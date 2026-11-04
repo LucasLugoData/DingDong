@@ -1,6 +1,6 @@
 # 005 · Dominio por colores y paleta nueva
 
-Estado: PENDIENTE
+Estado: APROBADA
 Peldaño inicial: 1
 Revisión: no
 
@@ -27,3 +27,5 @@ Colores rojo → naranja → azul → verde → dorado según aciertos y fallos 
 ## Dudas
 
 ## Resultado
+
+Aprobada por `flutter test test/mastery_test.dart && flutter analyze lib test` en el peldaño 1 (gpt-6-luna low).

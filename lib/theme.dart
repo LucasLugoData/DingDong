@@ -8,9 +8,17 @@ class AppColors {
   static const line = Color(0xFF3A4270);
   static const accent = Color(0xFF5B6CFF);
   static const accentSoft = Color(0xFFA9B2FF);
+  static const red = Color(0xFFFF4D4D);
   static const orange = Color(0xFFFF8A3D);
+  static const blue = Color(0xFF2E9BFF);
   static const green = Color(0xFF3CD3A3);
   static const gold = Color(0xFFFFCD1F);
+  static const lilac = Color(0xFFB57BFF);
+  static const bronze = Color(0xFFCD7F32);
+  static const silver = Color(0xFFC0C8D8);
+  static const paper = Color(0xFFE9DCC0);
+  static const ink = Color(0xFF2A1E14);
+  static const seal = Color(0xFFB3261E);
   static const text = Color(0xFFF4F5FB);
   static const muted = Color(0xFF9CA3C8);
 }
