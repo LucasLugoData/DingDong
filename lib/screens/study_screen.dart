@@ -196,10 +196,10 @@ class _StudyScreenState extends State<StudyScreen> with TickerProviderStateMixin
   }
 
   Widget _topRow() {
-    final pos = _session.isDone ? _session.queue.length : _session.index + 1;
-    final counter = Text('$pos / ${_session.queue.length}',
+    final pos = _session.isDone ? _session.total : _session.position;
+    final counter = Text('$pos / ${_session.total}',
         style: const TextStyle(fontWeight: FontWeight.w600, color: AppColors.muted, fontSize: 13));
-    final total = _session.queue.length;
+    final total = _session.total;
     final bar = ClipRRect(
       borderRadius: BorderRadius.circular(2),
       child: TweenAnimationBuilder<double>(
@@ -342,7 +342,7 @@ class _StudyScreenState extends State<StudyScreen> with TickerProviderStateMixin
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 6),
-                  child: Text('${_session.index + 1} / ${_session.queue.length}',
+                  child: Text('${_session.position} / ${_session.total}',
                       style: const TextStyle(fontWeight: FontWeight.w700)),
                 ),
                 IconButton(

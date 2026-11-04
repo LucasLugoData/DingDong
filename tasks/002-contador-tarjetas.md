@@ -1,6 +1,6 @@
 # 002 · Contador central de la sesión fijo
 
-Estado: PENDIENTE
+Estado: APROBADA
 Peldaño inicial: 1
 Revisión: no
 
@@ -28,3 +28,5 @@ El total no debe crecer: el contador es "palabras distintas resueltas / palabras
 ## Dudas
 
 ## Resultado
+
+Aprobada por `flutter test test/session_test.dart && flutter analyze lib test` en el peldaño 1 (gpt-6-luna low).

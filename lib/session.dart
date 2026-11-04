@@ -14,13 +14,15 @@ class StudySession {
     required this.shuffled,
     Random? random,
   }) : _random = random ?? Random(),
-       queue = List.of(words) {
+       queue = List.of(words),
+       total = words.length {
     _order(queue);
   }
 
   final bool tracking;
   final Random _random;
   final List<Word> queue;
+  final int total;
   bool shuffled;
   int index = 0;
   int knownCount = 0;
@@ -28,6 +30,7 @@ class StudySession {
   Word? _pinyinAnchor;
 
   bool get isDone => index >= queue.length;
+  int get position => total == 0 ? 0 : (index + 1).clamp(1, total);
   Word? get current => isDone ? null : queue[index];
 
   void _order(List<Word> list) {

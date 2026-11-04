@@ -156,4 +156,20 @@ void main() {
     expect(session.current, current);
     expect(session.queue.skip(session.index), orderedEquals([current, ...rest]));
   });
+
+  test('fallar dos veces mantiene fijo el total y limita la posición', () {
+    final session = StudySession(
+      words: words.take(5).toList(),
+      tracking: true,
+      shuffled: false,
+      random: Random(1),
+    );
+
+    session.answer(false);
+    session.answer(false);
+
+    expect(session.total, 5);
+    expect(session.position, 3);
+    expect(session.position, lessThanOrEqualTo(session.total));
+  });
 }
