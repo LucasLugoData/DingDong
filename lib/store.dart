@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'models.dart';
 import 'srs.dart';
+import 'game/player.dart';
 
 /// Estado global: vocabulario, progreso, notas, favoritas y ajustes.
 class AppStore extends ChangeNotifier {
@@ -20,15 +21,22 @@ class AppStore extends ChangeNotifier {
 
   /// Las conocidas vuelven a salir con intervalos crecientes (si no, nunca).
   bool reviewKnown = true;
+  late Player player;
 
   static const _kProgress = 'progress', _kNotes = 'notes', _kFav = 'favorites';
   static const _kCustom = 'custom', _kReviewKnown = 'reviewKnown';
+  static const _kPlayer = 'player';
 
   static Future<AppStore> load() async {
     final store = AppStore._(await SharedPreferences.getInstance());
     final raw = jsonDecode(await rootBundle.loadString('assets/vocab.json'));
     store._builtIn.addAll((raw as List).map((e) => Word.fromJson(e)));
     store._restore();
+    store.player = Player.fromJson(
+      store._prefs.getString(_kPlayer) == null
+          ? null
+          : jsonDecode(store._prefs.getString(_kPlayer)!),
+    );
     return store;
   }
 
@@ -94,6 +102,59 @@ class AppStore extends ChangeNotifier {
   }
 
   // ---------- Cambios ----------
+
+  void _savePlayer() {
+    _prefs.setString(_kPlayer, jsonEncode(player.toJson()));
+    notifyListeners();
+  }
+
+  void setName(String name) {
+    player.name = name.trim();
+    _savePlayer();
+  }
+
+  void setMode(AppMode? mode) {
+    player.mode = mode;
+    _savePlayer();
+  }
+
+  void recordAnswer(String wordId, bool correct) {
+    final old = player.wordStats[wordId] ?? (hits: 0, misses: 0);
+    player.wordStats[wordId] = (
+      hits: old.hits + (correct ? 1 : 0),
+      misses: old.misses + (correct ? 0 : 1),
+    );
+    player.seen.add(wordId);
+    _savePlayer();
+  }
+
+  void markSeen(String id) {
+    if (player.seen.add(id)) _savePlayer();
+  }
+
+  int grantXp(String gameMode, int baseXp) {
+    player.xp += baseXp;
+    player.gamesPlayed[gameMode] = (player.gamesPlayed[gameMode] ?? 0) + 1;
+    _savePlayer();
+    return baseXp;
+  }
+
+  void unlockMedal(String id) {
+    if (player.medals.add(id)) _savePlayer();
+  }
+
+  void setFeaturedMedal(String? id) {
+    player.featuredMedal = id;
+    _savePlayer();
+  }
+
+  void resetAccount() {
+    player = Player();
+    _prefs.remove(_kPlayer);
+    _prefs.remove(_kProgress);
+    _progress.clear();
+    notifyListeners();
+  }
 
   void answer(Word w, bool correct) {
     _progress[w.id] = Srs.answer(progressOf(w.id), correct, DateTime.now());

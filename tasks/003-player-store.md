@@ -1,6 +1,6 @@
 # 003 · Modelo Player y persistencia con migración
 
-Estado: PENDIENTE
+Estado: APROBADA
 Peldaño inicial: 2
 Revisión: sí
 
@@ -30,3 +30,5 @@ Añadir el estado del Modo Dinastía (tasks/DISENO.md "Player" y "API del store"
 ## Dudas
 
 ## Resultado
+
+Aprobada por `flutter test test/player_store_test.dart test/srs_test.dart && flutter analyze lib test` en el peldaño 2 (gpt-6-luna medium).
