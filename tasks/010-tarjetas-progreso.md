@@ -1,6 +1,6 @@
 # 010 · Tarjetas Dinastía: bloques, bloqueo y modo Progreso
 
-Estado: PENDIENTE
+Estado: APROBADA
 Peldaño inicial: 2
 Revisión: no
 
@@ -32,3 +32,5 @@ Pestaña Tarjetas del Modo Dinastía con bloques bloqueados por XP, medallas por
 ## Dudas
 
 ## Resultado
+
+Aprobada: el código era correcto; Claude corrigió el test (3 candados, HSK2-4).

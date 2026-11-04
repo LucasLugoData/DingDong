@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../screens/home_screen.dart';
+import 'cards_home.dart';
 import 'profile_screen.dart';
 import '../screens/reading_screen.dart';
 import '../screens/word_list_screen.dart';
@@ -31,7 +31,7 @@ class _DynastyShellState extends State<DynastyShell> {
     body: IndexedStack(
       index: _tab,
       children: const [
-        HomeScreen(),
+        CardsHome(),
         WordListScreen(),
         ProfileScreen(),
         SafeArea(child: Center(child: Text('Gramática'))),

@@ -9,8 +9,11 @@ import '../theme.dart';
 import '../widgets/flash_card.dart';
 
 class StudyScreen extends StatefulWidget {
-  const StudyScreen({super.key, required this.deckId});
+  const StudyScreen({super.key, required this.deckId, this.words, this.onAnswer, this.onFinish});
   final String deckId;
+  final List<Word>? words;
+  final void Function(Word, bool)? onAnswer;
+  final VoidCallback? onFinish;
 
   @override
   State<StudyScreen> createState() => _StudyScreenState();
@@ -32,6 +35,7 @@ class _StudyScreenState extends State<StudyScreen> with TickerProviderStateMixin
   bool _shuffled = false;
   bool _flipped = false;
   bool _fullscreen = false;
+  bool _finishedCallback = false;
   double _drag = 0;
 
   @override
@@ -45,18 +49,25 @@ class _StudyScreenState extends State<StudyScreen> with TickerProviderStateMixin
     _focus.dispose();
     _fly.dispose();
     _enter.dispose();
+    _finish();
     if (_fullscreen) SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     super.dispose();
   }
 
   void _start() {
-    final words = store.wordsOf(_deck.id);
+    final words = widget.words ?? store.wordsOf(_deck.id);
     _session = StudySession(
       words: _tracking ? words.where(store.isDue).toList() : words,
       tracking: _tracking,
       shuffled: _shuffled,
     );
     _flipped = false;
+  }
+
+  void _finish() {
+    if (_finishedCallback) return;
+    _finishedCallback = true;
+    widget.onFinish?.call();
   }
 
   void _restart() => setState(_start);
@@ -95,7 +106,9 @@ class _StudyScreenState extends State<StudyScreen> with TickerProviderStateMixin
     if (w == null) return;
     _advance(correct ? 1 : -1, () {
       store.answer(w, correct);
+      widget.onAnswer?.call(w, correct);
       _session.answer(correct);
+      if (_session.isDone) _finish();
     });
   }
 

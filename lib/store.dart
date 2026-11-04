@@ -64,6 +64,11 @@ class AppStore extends ChangeNotifier {
 
   List<Word> get allWords => [..._builtIn, ..._custom];
 
+  Map<String, List<String>> get wordIdsByDeck => {
+    for (final deck in const ['hsk1', 'hsk2', 'hsk3', 'hsk4'])
+      deck: _builtIn.where((word) => word.deck == deck).map((word) => word.id).toList(),
+  };
+
   /// Palabras de un mazo, ordenadas por pinyin.
   List<Word> wordsOf(String deck) {
     final words = switch (deck) {
