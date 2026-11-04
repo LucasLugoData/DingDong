@@ -1,6 +1,6 @@
 # 011 · Motor del modo Solitario (puro)
 
-Estado: PENDIENTE
+Estado: APROBADA
 Peldaño inicial: 3
 Revisión: no
 
@@ -30,3 +30,5 @@ Reglas de la partida Solitario, sin UI, en `lib/game/solitaire.dart`.
 ## Dudas
 
 ## Resultado
+
+Aprobada por `flutter test test/solitaire_test.dart && flutter analyze lib test` en el peldaño 3 (gpt-6.1-sol medium).
