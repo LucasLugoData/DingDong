@@ -1,6 +1,6 @@
 # 006 · Catálogo de logros (medallas)
 
-Estado: PENDIENTE
+Estado: APROBADA
 Peldaño inicial: 2
 Revisión: no
 
@@ -28,3 +28,5 @@ Medallas y su evaluación pura para bloques, perfil y barra superior.
 ## Dudas
 
 ## Resultado
+
+Aprobada por `flutter test test/achievements_test.dart && flutter analyze lib test` en el peldaño 3 (gpt-6.1-sol medium).
