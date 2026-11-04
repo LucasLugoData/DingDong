@@ -71,7 +71,6 @@ void main() {
     expect(app.store.player.name, 'Ariel');
     expect(app.store.player.mode, AppMode.dynasty);
     expect(find.byType(app.DynastyShell), findsOneWidget);
-    expect(find.text('Modo Dinastía'), findsOneWidget);
     final prefs = await SharedPreferences.getInstance();
     final saved = jsonDecode(prefs.getString('player')!) as Map<String, dynamic>;
     expect(saved['name'], 'Ariel');

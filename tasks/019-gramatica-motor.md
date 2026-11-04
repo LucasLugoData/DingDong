@@ -1,6 +1,6 @@
 # 019 · Gramática: bombo, corrector y puntuación (puro)
 
-Estado: PENDIENTE
+Estado: APROBADA
 Peldaño inicial: 3
 Revisión: no
 
@@ -28,3 +28,5 @@ Lógica de una tirada de Gramática en `lib/game/grammar.dart` (corrección offl
 ## Dudas
 
 ## Resultado
+
+Aprobada tras arreglos de Claude/Sonnet: suite completa 141 tests OK y analyze limpio.

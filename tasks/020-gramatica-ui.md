@@ -1,6 +1,6 @@
 # 020 · Gramática: bombo y construcción de frases
 
-Estado: PENDIENTE
+Estado: APROBADA
 Peldaño inicial: 3
 Revisión: no
 
@@ -29,3 +29,5 @@ Pestaña Gramática: tirar el bombo, montar la frase con fichas y corregir palab
 ## Dudas
 
 ## Resultado
+
+Aprobada tras arreglos de Claude/Sonnet: suite completa 141 tests OK y analyze limpio.

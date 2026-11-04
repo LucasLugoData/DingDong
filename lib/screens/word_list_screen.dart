@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../main.dart';
+import '../dynasty/fusion_screen.dart';
+import '../game/mastery.dart';
 import '../models.dart';
 import '../pinyin.dart';
 import '../theme.dart';
@@ -8,7 +10,9 @@ import '../widgets/note_editor.dart';
 
 /// Lista de palabras con buscador, favoritas y alta de tarjetas propias.
 class WordListScreen extends StatefulWidget {
-  const WordListScreen({super.key});
+  const WordListScreen({super.key, this.dynasty = false});
+
+  final bool dynasty;
 
   @override
   State<WordListScreen> createState() => _WordListScreenState();
@@ -17,18 +21,25 @@ class WordListScreen extends StatefulWidget {
 class _WordListScreenState extends State<WordListScreen> {
   String _deck = Deck.all;
   String _query = '';
+  bool _mostMisses = false;
 
   List<Word> _filtered() {
     final words = store.wordsOf(_deck);
     final q = _query.trim().toLowerCase();
-    if (q.isEmpty) return words;
     final pq = pinyinSearchKey(q);
-    return words
-        .where((w) =>
+    final filtered = q.isEmpty ? words : words.where((w) =>
             w.hanzi.contains(q) ||
             w.meaning.toLowerCase().contains(q) ||
-            (pq.isNotEmpty && w.searchKey.contains(pq)))
-        .toList();
+            (pq.isNotEmpty && w.searchKey.contains(pq))).toList();
+    if (_mostMisses) {
+      filtered.sort((a, b) {
+        final missesA = store.player.wordStats[a.id]?.misses ?? 0;
+        final missesB = store.player.wordStats[b.id]?.misses ?? 0;
+        final byMisses = missesB.compareTo(missesA);
+        return byMisses != 0 ? byMisses : a.pinyin.compareTo(b.pinyin);
+      });
+    }
+    return filtered;
   }
 
   @override
@@ -78,11 +89,37 @@ class _WordListScreenState extends State<WordListScreen> {
                 padding: const EdgeInsets.fromLTRB(20, 4, 20, 4),
                 child: Row(
                   children: [
-                    Text('${words.length} palabras · orden por pinyin',
+                    Text('${words.length} palabras',
                         style: const TextStyle(color: AppColors.muted, fontSize: 12)),
+                    const Spacer(),
+                    DropdownButton<bool>(
+                      key: const ValueKey('word-list-sort'),
+                      value: _mostMisses,
+                      isDense: true,
+                      underline: const SizedBox.shrink(),
+                      items: const [
+                        DropdownMenuItem(value: false, child: Text('Pinyin')),
+                        DropdownMenuItem(value: true, child: Text('Más falladas')),
+                      ],
+                      onChanged: (value) => setState(() => _mostMisses = value ?? false),
+                    ),
+                    if (widget.dynasty) ...[
+                      const SizedBox(width: 4),
+                      OutlinedButton(
+                        key: const ValueKey('fusion-button'),
+                        onPressed: () => Navigator.push(context,
+                            MaterialPageRoute<void>(builder: (_) => const FusionScreen())),
+                        child: const Text('Fusión'),
+                      ),
+                    ],
                   ],
                 ),
               ),
+              if (widget.dynasty)
+                const Padding(
+                  padding: EdgeInsets.only(bottom: 4),
+                  child: _MasteryLegend(),
+                ),
               Expanded(
                 child: words.isEmpty
                     ? const Center(
@@ -93,7 +130,7 @@ class _WordListScreenState extends State<WordListScreen> {
                         padding: const EdgeInsets.fromLTRB(12, 0, 12, 96),
                         itemCount: words.length,
                         itemExtent: 72,
-                        itemBuilder: (context, i) => _WordTile(word: words[i]),
+                        itemBuilder: (context, i) => _WordTile(word: words[i], dynasty: widget.dynasty),
                       ),
               ),
             ],
@@ -105,13 +142,17 @@ class _WordListScreenState extends State<WordListScreen> {
 }
 
 class _WordTile extends StatelessWidget {
-  const _WordTile({required this.word});
+  const _WordTile({required this.word, required this.dynasty});
   final Word word;
+  final bool dynasty;
 
   @override
   Widget build(BuildContext context) {
     final p = store.progressOf(word.id);
-    final status = p.isKnown ? AppColors.green : p.isLearning ? AppColors.orange : AppColors.line;
+    final stats = store.player.wordStats[word.id] ?? (hits: 0, misses: 0);
+    final status = dynasty
+        ? masteryOf(stats.hits, stats.misses).color
+        : p.isKnown ? AppColors.green : p.isLearning ? AppColors.orange : AppColors.line;
     final fav = store.isFavorite(word.id);
     final hasNote = store.noteOf(word.id).isNotEmpty;
     return InkWell(
@@ -157,6 +198,23 @@ class _WordTile extends StatelessWidget {
       ),
     );
   }
+}
+
+class _MasteryLegend extends StatelessWidget {
+  const _MasteryLegend();
+
+  @override
+  Widget build(BuildContext context) => Row(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      for (final mastery in Mastery.values) ...[
+        if (mastery != Mastery.red) const Text(' → ', style: TextStyle(color: AppColors.muted, fontSize: 11)),
+        Container(width: 8, height: 8, decoration: BoxDecoration(color: mastery.color, shape: BoxShape.circle)),
+        const SizedBox(width: 3),
+        Text(mastery.label, style: const TextStyle(color: AppColors.muted, fontSize: 10)),
+      ],
+    ],
+  );
 }
 
 void _showDetail(BuildContext context, Word word) => showModalBottomSheet(

@@ -1,6 +1,6 @@
 # 014 · Solitario: pantalla de partida y tienda
 
-Estado: PENDIENTE
+Estado: APROBADA
 Peldaño inicial: 3
 Revisión: no
 
@@ -30,3 +30,5 @@ Jugar las 100 tarjetas con el marcador estilo referencia y tienda cada 20.
 ## Dudas
 
 ## Resultado
+
+Aprobada tras arreglos de Claude/Sonnet: suite completa 141 tests OK y analyze limpio.

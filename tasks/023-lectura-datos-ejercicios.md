@@ -1,6 +1,6 @@
 # 023 · Lectura: datos de ejercicios
 
-Estado: PENDIENTE
+Estado: APROBADA
 Peldaño inicial: 2
 Revisión: no
 
@@ -25,3 +25,5 @@ Para cada uno de los 6 textos de lib/data/readings.dart, pregunta de idea centra
 ## Dudas
 
 ## Resultado
+
+Aprobada tras arreglos de Claude/Sonnet: suite completa 141 tests OK y analyze limpio.

@@ -1,6 +1,6 @@
 # 015 · Solitario: demostración, resultados y ruleta
 
-Estado: PENDIENTE
+Estado: APROBADA
 Peldaño inicial: 3
 Revisión: no
 
@@ -30,3 +30,5 @@ Cierre de la partida: demostrar lo que dijiste saber, convertir puntos en XP y r
 ## Dudas
 
 ## Resultado
+
+Aprobada tras arreglos de Claude/Sonnet: suite completa 141 tests OK y analyze limpio.

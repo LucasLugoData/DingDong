@@ -1,6 +1,6 @@
 # 016 · Hanziario: colores de dominio y orden por más falladas
 
-Estado: PENDIENTE
+Estado: APROBADA
 Peldaño inicial: 1
 Revisión: no
 
@@ -28,3 +28,5 @@ En Modo Dinastía la lista de palabras usa los 5 colores de dominio y puede orde
 ## Dudas
 
 ## Resultado
+
+Aprobada tras arreglos de Claude/Sonnet: suite completa 141 tests OK y analyze limpio.

@@ -1,6 +1,6 @@
 # 013 · Widget de carta de pasiva (estética antigua china)
 
-Estado: PENDIENTE
+Estado: APROBADA
 Peldaño inicial: 2
 Revisión: no
 
@@ -28,3 +28,5 @@ Carta reutilizable para la tienda de Solitario y la elección de Gramática (DIS
 ## Dudas
 
 ## Resultado
+
+Aprobada tras arreglos de Claude/Sonnet: suite completa 141 tests OK y analyze limpio.

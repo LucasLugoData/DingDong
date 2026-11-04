@@ -5,7 +5,9 @@ import 'package:dingdong/game/achievements.dart';
 import 'package:dingdong/game/player.dart';
 import 'package:dingdong/game/xp.dart';
 import 'package:dingdong/main.dart' as app;
-import 'package:dingdong/screens/home_screen.dart';
+import 'package:dingdong/dynasty/cards_home.dart';
+import 'package:dingdong/dynasty/grammar_screen.dart';
+import 'package:dingdong/dynasty/profile_screen.dart';
 import 'package:dingdong/screens/reading_screen.dart';
 import 'package:dingdong/screens/word_list_screen.dart';
 import 'package:dingdong/store.dart';
@@ -53,7 +55,7 @@ void main() {
       expect(find.byKey(ValueKey('dynasty-tab-$i')), findsOneWidget);
       expect(find.text(destinations[i]), findsOneWidget);
     }
-    expect(find.byType(HomeScreen), findsOneWidget);
+    expect(find.byType(CardsHome), findsOneWidget);
     expect(find.text('Ariel'), findsOneWidget);
     expect(find.text('Nv 1'), findsOneWidget);
 
@@ -72,16 +74,17 @@ void main() {
     for (final index in [1, 2, 3, 4, 0]) {
       await tester.tap(find.byKey(ValueKey('dynasty-tab-$index')));
       await tester.pumpAndSettle();
-      expect(tester.widget<IndexedStack>(find.byType(IndexedStack)).index, index);
+      expect(tester.widget<IndexedStack>(find.byType(IndexedStack).first).index, index);
       expect(find.byType(TopBar), index == 2 ? findsNothing : findsOneWidget);
       switch (index) {
         case 0:
-          expect(find.byType(HomeScreen), findsOneWidget);
+          expect(find.byType(CardsHome), findsOneWidget);
         case 1:
           expect(find.byType(WordListScreen), findsOneWidget);
         case 2:
+          expect(find.byType(ProfileScreen), findsOneWidget);
         case 3:
-          expect(find.text(destinations[index]), findsNWidgets(2));
+          expect(find.byType(GrammarScreen), findsOneWidget);
         case 4:
           expect(find.byType(ReadingScreen), findsOneWidget);
       }
@@ -122,5 +125,27 @@ void main() {
     expect(medalDecoration().color, Colors.grey);
     expect(find.descendant(of: medalFinder, matching: find.byType(Icon)), findsNothing);
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('x2 marca el modo menos usado y desaparece al canjear', (tester) async {
+    app.store.player.gamesPlayed
+      ..['cards'] = 3
+      ..['grammar'] = 0
+      ..['reading'] = 2;
+    app.store.player.bonusMode = 'grammar';
+    await open(tester, const app.ZikaApp());
+    expect(find.text('x2'), findsOneWidget);
+    expect(find.descendant(
+      of: find.byKey(const ValueKey('dynasty-tab-3')),
+      matching: find.text('x2'),
+    ), findsOneWidget);
+    expect(find.descendant(
+      of: find.byKey(const ValueKey('dynasty-tab-0')),
+      matching: find.text('x2'),
+    ), findsNothing);
+
+    app.store.grantXp('grammar', 10);
+    await tester.pump();
+    expect(find.text('x2'), findsNothing);
   });
 }

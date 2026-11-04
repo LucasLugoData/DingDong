@@ -1,6 +1,6 @@
 # 025 · Indicador x2 del modo menos usado
 
-Estado: PENDIENTE
+Estado: APROBADA
 Peldaño inicial: 1
 Revisión: no
 
@@ -25,3 +25,5 @@ Mostrar qué modo (Tarjetas, Gramática, Lectura) da x2 de XP al canjear.
 ## Dudas
 
 ## Resultado
+
+Aprobada tras arreglos de Claude/Sonnet: suite completa 141 tests OK y analyze limpio.

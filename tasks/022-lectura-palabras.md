@@ -1,6 +1,6 @@
 # 022 · Lectura: pinyin al tocar, traducción al mantener
 
-Estado: PENDIENTE
+Estado: APROBADA
 Peldaño inicial: 2
 Revisión: no
 
@@ -27,3 +27,5 @@ Segmentar los textos en palabras del vocabulario para mostrar pinyin (toque) y s
 ## Dudas
 
 ## Resultado
+
+Aprobada tras arreglos de Claude/Sonnet: suite completa 141 tests OK y analyze limpio.

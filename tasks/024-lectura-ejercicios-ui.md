@@ -1,6 +1,6 @@
 # 024 · Lectura: pantalla de ejercicios
 
-Estado: PENDIENTE
+Estado: APROBADA
 Peldaño inicial: 2
 Revisión: no
 
@@ -27,3 +27,5 @@ Ejercicio 1: idea central. Ejercicio 2: "pulsa el verbo / sustantivo / partícul
 ## Dudas
 
 ## Resultado
+
+Aprobada tras arreglos de Claude/Sonnet: suite completa 141 tests OK y analyze limpio.

@@ -1,6 +1,6 @@
 # 012 · Catálogo de pasivas
 
-Estado: PENDIENTE
+Estado: APROBADA
 Peldaño inicial: 2
 Revisión: no
 
@@ -27,3 +27,5 @@ Pasivas estilo roguelike que premian acertar (fichas, mult, multMult, monedas), 
 ## Dudas
 
 ## Resultado
+
+Aprobada tras arreglos de Claude/Sonnet: suite completa 141 tests OK y analyze limpio.

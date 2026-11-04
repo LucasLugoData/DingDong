@@ -1,6 +1,6 @@
 # 018 · Gramática: roles de las palabras (datos)
 
-Estado: PENDIENTE
+Estado: APROBADA
 Peldaño inicial: 2
 Revisión: no
 
@@ -25,3 +25,5 @@ Asignar a cada palabra HSK1-3 su rol sintáctico para el bombo y el corrector po
 ## Dudas
 
 ## Resultado
+
+Aprobada tras arreglos de Claude/Sonnet: suite completa 141 tests OK y analyze limpio.

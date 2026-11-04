@@ -1,6 +1,6 @@
 # 021 · Gramática: elección de pasivas cada 2 frases y canjear
 
-Estado: PENDIENTE
+Estado: APROBADA
 Peldaño inicial: 2
 Revisión: no
 
@@ -26,3 +26,5 @@ Cerrar el bucle de la tirada de Gramática.
 ## Dudas
 
 ## Resultado
+
+Aprobada tras arreglos de Claude/Sonnet: suite completa 141 tests OK y analyze limpio.

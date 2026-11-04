@@ -145,7 +145,8 @@ class AppStore extends ChangeNotifier {
     if (last != null && now.difference(last) < const Duration(hours: 2)) return null;
     if (player.bonusMode == null) {
       player.bonusMode = leastUsedMode(player.gamesPlayed, _random);
-      _savePlayer();
+      // Se guarda sin notificar: el getter se lee durante build.
+      _prefs.setString(_kPlayer, jsonEncode(player.toJson()));
     }
     return player.bonusMode;
   }

@@ -6,6 +6,7 @@ import '../main.dart';
 import '../models.dart';
 import '../screens/study_screen.dart';
 import '../theme.dart';
+import 'solitaire_screen.dart';
 
 class CardsHome extends StatelessWidget {
   const CardsHome({super.key});
@@ -61,7 +62,9 @@ class CardsHome extends StatelessWidget {
           }),
           ListTile(title: const Text('Solitario'), leading: const Icon(Icons.style), onTap: () {
             Navigator.pop(sheetContext);
-            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Próximamente')));
+            Navigator.of(context).push(MaterialPageRoute(
+              builder: (_) => SolitaireScreen(words: words),
+            ));
           }),
         ]),
       ),

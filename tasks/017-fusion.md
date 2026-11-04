@@ -1,6 +1,6 @@
 # 017 · Submodo Fusión
 
-Estado: PENDIENTE
+Estado: APROBADA
 Peldaño inicial: 2
 Revisión: no
 
@@ -28,3 +28,5 @@ Ver cómo sinogramas básicos del vocabulario se combinan en palabras más compl
 ## Dudas
 
 ## Resultado
+
+Aprobada tras arreglos de Claude/Sonnet: suite completa 141 tests OK y analyze limpio.
