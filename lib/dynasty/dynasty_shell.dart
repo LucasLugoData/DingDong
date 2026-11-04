@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../screens/home_screen.dart';
+import 'profile_screen.dart';
 import '../screens/reading_screen.dart';
 import '../screens/word_list_screen.dart';
 import '../theme.dart';
@@ -32,7 +33,7 @@ class _DynastyShellState extends State<DynastyShell> {
       children: const [
         HomeScreen(),
         WordListScreen(),
-        SafeArea(child: Center(child: Text('Perfil'))),
+        ProfileScreen(),
         SafeArea(child: Center(child: Text('Gramática'))),
         ReadingScreen(),
       ],

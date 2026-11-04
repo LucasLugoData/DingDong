@@ -173,9 +173,9 @@ class _DeckCard extends StatelessWidget {
               const SizedBox(height: 10),
               Row(
                 children: [
-                  _Dot(AppColors.green, '${s.known} conocidas'),
+                  Flexible(child: _Dot(AppColors.green, '${s.known} conocidas')),
                   const SizedBox(width: 14),
-                  _Dot(AppColors.orange, '${s.learning} en progreso'),
+                  Flexible(child: _Dot(AppColors.orange, '${s.learning} en progreso')),
                   const Spacer(),
                   Text('$total', style: const TextStyle(color: AppColors.muted)),
                 ],
@@ -219,10 +219,12 @@ class _Dot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Row(
+    mainAxisSize: MainAxisSize.min,
     children: [
       Container(width: 8, height: 8, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
       const SizedBox(width: 6),
-      Text(label, style: const TextStyle(fontSize: 12, color: AppColors.muted)),
+      Flexible(child: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis,
+          style: const TextStyle(fontSize: 12, color: AppColors.muted))),
     ],
   );
 }

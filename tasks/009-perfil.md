@@ -1,6 +1,6 @@
 # 009 · Pantalla Perfil
 
-Estado: PENDIENTE
+Estado: APROBADA
 Peldaño inicial: 2
 Revisión: no
 
@@ -30,3 +30,5 @@ Perfil del Modo Dinastía con logros, zona de mascota y opciones de cuenta.
 ## Dudas
 
 ## Resultado
+
+Aprobada: Codex dejó el perfil hecho; Claude arregló el overflow de home_screen (fila de puntos) que rompía el test.
