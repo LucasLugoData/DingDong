@@ -1,6 +1,6 @@
 # 001 · Bug: volver de aleatorio a abecedario
 
-Estado: PENDIENTE
+Estado: APROBADA
 Peldaño inicial: 1
 Revisión: no
 
@@ -28,3 +28,5 @@ a la tarjeta en la que estabas en orden pinyin al activar aleatorio (o a la sigu
 ## Dudas
 
 ## Resultado
+
+Aprobada por `flutter test test/session_test.dart test/srs_test.dart && flutter analyze lib test` en el peldaño 3 (gpt-6.1-sol medium).

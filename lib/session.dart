@@ -25,6 +25,7 @@ class StudySession {
   int index = 0;
   int knownCount = 0;
   int learningCount = 0;
+  Word? _pinyinAnchor;
 
   bool get isDone => index >= queue.length;
   Word? get current => isDone ? null : queue[index];
@@ -37,21 +38,41 @@ class StudySession {
     }
   }
 
-  /// Aleatorio ↔ orden alfabético, manteniendo la tarjeta actual a la vista.
+  /// Al volver a pinyin, retoma el ancla o la siguiente pendiente.
   void toggleShuffle() {
+    if (!shuffled) {
+      _pinyinAnchor = current;
+    }
     shuffled = !shuffled;
     final cur = current;
     if (tracking) {
       final rest = queue.sublist(index);
       _order(rest);
-      if (cur != null) {
-        rest.remove(cur);
-        rest.insert(0, cur);
+      if (shuffled || _pinyinAnchor == null) {
+        if (cur != null) {
+          rest.remove(cur);
+          rest.insert(0, cur);
+        }
+      } else {
+        final anchorKey = _pinyinAnchor!.sortKey;
+        final anchorIndex = rest.indexWhere(
+          (word) => word.sortKey.compareTo(anchorKey) >= 0,
+        );
+        if (anchorIndex > 0) {
+          final ordered = [
+            ...rest.sublist(anchorIndex),
+            ...rest.sublist(0, anchorIndex),
+          ];
+          rest
+            ..clear()
+            ..addAll(ordered);
+        }
       }
       queue.replaceRange(index, queue.length, rest);
     } else {
       _order(queue);
-      index = cur == null ? 0 : queue.indexOf(cur);
+      final target = shuffled ? cur : (_pinyinAnchor ?? cur);
+      index = target == null ? 0 : queue.indexOf(target);
     }
   }
 
