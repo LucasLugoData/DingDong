@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../main.dart';
 import '../models.dart';
+import '../game/player.dart';
 import '../theme.dart';
 import 'study_screen.dart';
 
@@ -62,13 +63,24 @@ class _Header extends StatelessWidget {
             child: Text('字', style: hanziStyle(24)),
           ),
           const SizedBox(width: 12),
-          const Column(
+          const Expanded(child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text('Zìkǎ', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800)),
               Text('字卡 · vocabulario HSK', style: TextStyle(color: AppColors.muted)),
             ],
-          ),
+          )),
+          if (store.player.mode == AppMode.free)
+            PopupMenuButton<AppMode>(
+              tooltip: 'Menú',
+              itemBuilder: (context) => const [
+                PopupMenuItem(
+                  value: AppMode.dynasty,
+                  child: Text('Cambiar a Modo Dinastía'),
+                ),
+              ],
+              onSelected: (_) => store.setMode(null),
+            ),
         ],
       ),
       const SizedBox(height: 20),
