@@ -1,6 +1,6 @@
 # 029 · Emblemas en acuarela de los logros
 
-Estado: PENDIENTE
+Estado: APROBADA
 Peldaño inicial: 3
 Revisión: no
 
@@ -47,3 +47,5 @@ En `Achievement` añade `String get imageAsset`: los de bloque (`hsk1_bronze`, `
 Si no tienes herramienta de generación de imágenes, NO dibujes sustitutos con código: escribe aquí "sin generación de imágenes" y para.
 
 ## Resultado
+
+Aprobada por `flutter test test/achievement_assets_test.dart test/achievements_test.dart && flutter analyze lib test` en el peldaño 3 (gpt-6.1-sol medium).

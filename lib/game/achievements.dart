@@ -12,6 +12,12 @@ class Achievement {
   final String description;
   final Color color;
   final IconData icon;
+
+  String get imageAsset {
+    final block = RegExp(r'^hsk\d+_(bronze|silver|gold)$').firstMatch(id);
+    final name = block == null ? id : 'block_${block.group(1)}';
+    return 'assets/achievements/$name.png';
+  }
 }
 
 Achievement _blockMedal(String deckId, String rank, String title, String description,
