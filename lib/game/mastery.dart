@@ -32,6 +32,13 @@ Mastery masteryOf(int hits, int misses) {
       : Mastery.green;
 }
 
+/// Avance de 0 (sin dominar) a 1 (consolidada) para la barra del Hanziario.
+double masteryProgress(int hits, int misses) {
+  if (masteryOf(hits, misses) == Mastery.gold) return 1;
+  final net = (hits - misses).clamp(0, 10);
+  return hits == 0 ? 0 : (0.08 + net / 10 * 0.84).clamp(0.08, 0.92);
+}
+
 double difficultyMult(Mastery mastery) => switch (mastery) {
   Mastery.red => 2.0,
   Mastery.orange || Mastery.blue => 1.5,

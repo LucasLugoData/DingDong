@@ -184,6 +184,25 @@ class _WordTile extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(color: AppColors.muted)),
+                  if (dynasty)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5),
+                      child: TweenAnimationBuilder<double>(
+                        tween: Tween(end: masteryProgress(stats.hits, stats.misses)),
+                        duration: const Duration(milliseconds: 500),
+                        curve: Curves.easeOutCubic,
+                        builder: (context, value, _) => ClipRRect(
+                          borderRadius: BorderRadius.circular(3),
+                          child: LinearProgressIndicator(
+                            key: ValueKey('mastery-bar-${word.id}'),
+                            value: value,
+                            minHeight: 5,
+                            color: status,
+                            backgroundColor: AppColors.line.withValues(alpha: .5),
+                          ),
+                        ),
+                      ),
+                    ),
                 ],
               ),
             ),

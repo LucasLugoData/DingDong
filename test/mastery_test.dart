@@ -59,4 +59,11 @@ void main() {
     expect(difficultyMult(Mastery.green), 1.25);
     expect(difficultyMult(Mastery.gold), 1.25);
   });
+
+  test('la barra avanza al acertar y llega al final al consolidar', () {
+    expect(masteryProgress(0, 0), 0);
+    expect(masteryProgress(3, 0), greaterThan(masteryProgress(1, 0)));
+    expect(masteryProgress(3, 2), lessThan(masteryProgress(3, 0)));
+    expect(masteryProgress(12, 0), 1);
+  });
 }
