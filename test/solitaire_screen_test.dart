@@ -9,6 +9,7 @@ import 'package:dingdong/store.dart';
 import 'package:dingdong/theme.dart';
 import 'package:dingdong/widgets/flash_card.dart';
 import 'package:dingdong/widgets/passive_card.dart';
+import 'package:dingdong/widgets/score_burst.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -36,14 +37,20 @@ void main() {
     expect(find.text('0/100'), findsOneWidget);
     for (var i = 0; i < 20; i++) {
       await tester.tap(find.text('La sé'));
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 16));
+      final burst = tester.widget<ScoreBurst>(find.byType(ScoreBurst));
+      expect(burst.eventId, i + 1);
+      expect(burst.event?.correct, isTrue);
     }
+    await tester.pumpAndSettle();
     expect(find.byType(ShopSheet), findsOneWidget);
     expect(find.byType(PassiveCard), findsNWidgets(3));
     expect(find.text('20/100'), findsOneWidget);
     final shop = tester.widget<ShopSheet>(find.byType(ShopSheet));
     expect(shop.run.coins, 20);
     expect(shop.run.score, 2100);
+    expect(tester.widget<ScoreBurst>(find.byType(ScoreBurst)).event, same(shop.run.lastEvent));
+    expect(tester.widget<Text>(find.byKey(const ValueKey('score'))).data, '${shop.run.score.toInt()}');
     final card = tester.widgetList<PassiveCard>(find.byType(PassiveCard)).first;
     final price = int.parse(card.price!.split(' ').first);
     await tester.tap(find.byKey(card.key!));
@@ -59,9 +66,37 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byType(ShopSheet), findsNothing);
     expect(find.text('${card.hanzi} ${card.name}'), findsOneWidget);
+    expect(find.byWidgetPredicate((widget) => widget is Image &&
+      widget.image == AssetImage(card.imageAsset!)), findsOneWidget);
     expect(app.store.player.wordStats.values.fold<int>(0, (sum, s) => sum + s.hits), 20);
     expect(app.store.player.wordStats.keys.every(app.store.player.seen.contains), isTrue);
     expect(app.store.player.wordStats.containsKey(app.store.allWords[3].id), isFalse);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('el marcador cuenta, sacude y termina sin bloquear la entrada', (tester) async {
+    await open(tester);
+    await tester.tap(find.text('La sé'));
+    await tester.pump();
+    final burst = tester.widget<ScoreBurst>(find.byType(ScoreBurst));
+    expect(burst.event?.gain, 10);
+    expect(tester.widget<Text>(find.byKey(const ValueKey('score'))).data, '0');
+    await tester.pump(const Duration(milliseconds: 300));
+    final score = double.parse(tester.widget<Text>(find.byKey(const ValueKey('score'))).data!);
+    expect(score, greaterThan(0));
+    expect(score, lessThan(10));
+    expect(tester.widget<Transform>(find.byKey(const ValueKey('screen-shake')))
+      .transform.getTranslation().x, isNot(0));
+    final coinPop = tester.widget<Transform>(find.ancestor(
+      of: find.byKey(const ValueKey('run-coins')), matching: find.byType(Transform)).first);
+    expect(coinPop.transform.getMaxScaleOnAxis(), greaterThan(1));
+    await tester.tap(find.text('La sé'));
+    await tester.pumpAndSettle();
+    expect(find.text('2/100'), findsOneWidget);
+    expect(tester.widget<Text>(find.byKey(const ValueKey('score'))).data, '30');
+    expect(tester.widget<Transform>(find.byKey(const ValueKey('screen-shake')))
+      .transform.getTranslation().x, 0);
+    expect(tester.binding.transientCallbackCount, 0);
     expect(tester.takeException(), isNull);
   });
 

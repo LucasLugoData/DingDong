@@ -1,6 +1,6 @@
 # 034 · Marcador de casino en el Solitario
 
-Estado: PENDIENTE
+Estado: APROBADA
 Peldaño inicial: 3
 Revisión: no
 
@@ -35,3 +35,5 @@ PROHIBIDO tocar la tarjeta de papiro de memorizar (`FlashCard`), `lib/theme.dart
 ## Dudas
 
 ## Resultado
+
+Aprobada por `flutter test test/solitaire_screen_test.dart test/score_burst_test.dart && flutter analyze lib test` en el peldaño 3 (gpt-6.1-sol medium).
