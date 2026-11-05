@@ -19,6 +19,26 @@ abstract class PassiveHooks {
   int priceModifier(int price) => price;
 }
 
+class ScoreEvent {
+  const ScoreEvent({
+    required this.correct,
+    required this.chips,
+    required this.mult,
+    required this.multMult,
+    required this.gain,
+    required this.streak,
+    required this.triggered,
+  });
+
+  final bool correct;
+  final int chips;
+  final int mult;
+  final double multMult;
+  final double gain;
+  final int streak;
+  final List<int> triggered;
+}
+
 /// Pasivas que se pueden tener a la vez en una partida.
 const maxPassives = 10;
 
@@ -48,6 +68,8 @@ class SolitaireRun {
   final Set<String> _knownThisRun = {};
   int _index = 0;
   double? _finalScore;
+  int _streak = 0;
+  ScoreEvent? lastEvent;
 
   int chips = 10;
   int mult = 1;
@@ -67,19 +89,42 @@ class SolitaireRun {
   void answer(bool correct) {
     final word = current;
     if (word == null) return;
+    final triggered = <int>[];
     if (correct) {
       _knownThisRun.add(word.id);
-      for (final passive in _passives) {
+      for (var i = 0; i < _passives.length; i++) {
+        final passive = _passives[i];
+        final before = (chips, mult, multMult, coins, coinsPerCorrect);
         passive.onCorrect(this);
+        if (before != (chips, mult, multMult, coins, coinsPerCorrect)) {
+          triggered.add(i);
+        }
       }
-      score += chips * mult * multMult;
+      final eventChips = chips;
+      final eventMult = mult;
+      final eventMultMult = multMult;
+      final gain = eventChips * eventMult * eventMultMult;
+      score += gain;
       coins += coinsPerCorrect;
       mult++;
+      _streak++;
+      lastEvent = ScoreEvent(correct: true, chips: eventChips, mult: eventMult,
+          multMult: eventMultMult, gain: gain, streak: _streak,
+          triggered: List.unmodifiable(triggered));
     } else {
       mult = 1;
-      for (final passive in _passives) {
+      for (var i = 0; i < _passives.length; i++) {
+        final passive = _passives[i];
+        final before = (chips, mult, multMult, coins, coinsPerCorrect);
         passive.onWrong(this);
+        if (before != (chips, mult, multMult, coins, coinsPerCorrect)) {
+          triggered.add(i);
+        }
       }
+      _streak = 0;
+      lastEvent = ScoreEvent(correct: false, chips: chips, mult: mult,
+          multMult: multMult, gain: 0, streak: 0,
+          triggered: List.unmodifiable(triggered));
     }
     _index++;
     if (isShopTime) {

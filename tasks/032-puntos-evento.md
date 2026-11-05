@@ -1,6 +1,6 @@
 # 032 · Evento de puntuación del Solitario (lógica pura)
 
-Estado: PENDIENTE
+Estado: APROBADA
 Peldaño inicial: 2
 Revisión: no
 
@@ -37,3 +37,5 @@ Que cada respuesta del Solitario deje un registro de lo que pasó para poder ani
 ## Dudas
 
 ## Resultado
+
+Aprobada por `flutter test test/solitaire_test.dart test/praise_test.dart && flutter analyze lib test` en el peldaño 2 (gpt-6-luna medium).
