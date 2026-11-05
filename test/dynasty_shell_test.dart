@@ -13,6 +13,7 @@ import 'package:dingdong/screens/word_list_screen.dart';
 import 'package:dingdong/store.dart';
 import 'package:dingdong/theme.dart';
 import 'package:dingdong/widgets/top_bar.dart';
+import 'package:dingdong/widgets/achievement_medal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -115,8 +116,11 @@ void main() {
     expect(find.text('Nv ${progress.level}'), findsOneWidget);
     expect(tester.widget<LinearProgressIndicator>(find.byType(LinearProgressIndicator)).value,
         closeTo(progress.xpEnNivel / progress.xpNecesaria, .0001));
-    expect(medalDecoration().color, medal.color);
-    expect(find.byIcon(medal.icon), findsOneWidget);
+    expect(medalDecoration().color, isNull);
+    expect(
+      find.descendant(of: medalFinder, matching: find.byType(AchievementMedal)),
+      findsOneWidget,
+    );
     expect(tester.getCenter(medalFinder).dx, 187.5);
     expect(tester.takeException(), isNull);
 

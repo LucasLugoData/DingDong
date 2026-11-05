@@ -4,6 +4,7 @@ import '../game/achievements.dart';
 import '../game/xp.dart';
 import '../main.dart' show store;
 import '../theme.dart';
+import 'achievement_medal.dart';
 
 class TopBar extends StatelessWidget implements PreferredSizeWidget {
   const TopBar({super.key});
@@ -49,11 +50,15 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
                         height: 40,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: medal?.color ?? Colors.grey,
+                          color: medal == null ? Colors.grey : null,
                         ),
                         child: medal == null
                             ? null
-                            : Icon(medal.icon, color: AppColors.bg),
+                            : AchievementMedal(
+                                medal: medal,
+                                size: 40,
+                                unlocked: true,
+                              ),
                       ),
                     ),
                   ),

@@ -1,6 +1,6 @@
 # 031 · Aviso de logro y medalla de la barra con el medallón imperial
 
-Estado: PENDIENTE
+Estado: APROBADA
 Peldaño inicial: 2
 Revisión: no
 
@@ -26,3 +26,5 @@ Usar `AchievementMedal` (`lib/widgets/achievement_medal.dart`, tarea 030) en el 
 ## Dudas
 
 ## Resultado
+
+Aprobada por `flutter test test/dynasty_shell_test.dart test/profile_test.dart && flutter analyze lib test` en el peldaño 2 (gpt-6-luna medium).

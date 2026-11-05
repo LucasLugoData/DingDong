@@ -9,6 +9,7 @@ import 'game/achievements.dart';
 import 'game/player.dart';
 import 'store.dart';
 import 'theme.dart';
+import 'widgets/achievement_medal.dart';
 
 export 'dynasty/dynasty_shell.dart';
 
@@ -30,9 +31,13 @@ void showMedalToast(String id) {
   messengerKey.currentState?.showSnackBar(SnackBar(
     behavior: SnackBarBehavior.floating,
     backgroundColor: AppColors.surface,
+    shape: RoundedRectangleBorder(
+      side: const BorderSide(color: AppColors.gold),
+      borderRadius: BorderRadius.circular(12),
+    ),
     duration: const Duration(seconds: 4),
     content: Row(children: [
-      CircleAvatar(backgroundColor: medal.color, child: Icon(medal.icon, color: AppColors.bg)),
+      AchievementMedal(medal: medal, size: 48, unlocked: true),
       const SizedBox(width: 12),
       Expanded(child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
         const Text('¡Logro conseguido!', style: TextStyle(color: AppColors.gold, fontWeight: FontWeight.w800)),
