@@ -30,12 +30,6 @@ class CardsHome extends StatelessWidget {
       return ListView(
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(18),
-            child: Image.asset('assets/art/pagoda.png', fit: BoxFit.cover,
-              height: 130, width: double.infinity, filterQuality: FilterQuality.medium),
-          ),
-          const SizedBox(height: 14),
           _SolitaireBanner(
             seenCount: seenWords.length,
             locked: store.player.xp < solitaireXp,
@@ -108,7 +102,7 @@ class _Block extends StatelessWidget {
                 for (final medal in medals)
                   Padding(
                     padding: const EdgeInsets.only(left: 7),
-                    child: Icon(Icons.circle, size: 13, color: store.player.medals.contains(medal.id) ? medal.color : AppColors.bg),
+                    child: Icon(Icons.circle, size: 13, color: store.player.medals.contains(medal.id) ? medal.color : AppColors.line),
                   ),
               ],
             ]),
@@ -132,42 +126,34 @@ class _SolitaireBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final enabled = !locked && seenCount > 0;
+    final fg = enabled ? AppColors.text : AppColors.muted;
     return Material(
-      color: Colors.transparent,
+      color: AppColors.surface,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(color: enabled ? AppColors.gold : AppColors.line),
+      ),
       child: InkWell(
         key: const ValueKey('solitaire-banner'),
         onTap: enabled ? onOpen : null,
-        borderRadius: BorderRadius.circular(18),
-        child: Ink(
+        borderRadius: BorderRadius.circular(16),
+        child: Padding(
           padding: const EdgeInsets.all(18),
-          decoration: BoxDecoration(
-            color: enabled ? AppColors.seal : AppColors.surface,
-            borderRadius: BorderRadius.circular(18),
-            border: Border.all(color: AppColors.gold.withValues(alpha: !enabled ? .25 : .9), width: 2),
-          ),
           child: Row(children: [
-            Opacity(
-              opacity: enabled ? 1 : .45,
-              child: Container(
-                width: 64, height: 64,
-                decoration: const BoxDecoration(color: AppColors.paper, shape: BoxShape.circle),
-                padding: const EdgeInsets.all(4),
-                child: Image.asset('assets/art/dragon.png'),
-              ),
-            ),
-            const SizedBox(width: 14),
+            Icon(locked ? Icons.lock_outline : Icons.style_outlined,
+              color: enabled ? AppColors.gold : AppColors.muted, size: 30),
+            const SizedBox(width: 16),
             Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text('SOLITARIO', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900, letterSpacing: 2,
-                color: !enabled ? AppColors.muted : AppColors.paper)),
+              Text('SOLITARIO', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w800,
+                letterSpacing: 3, color: fg)),
               const SizedBox(height: 4),
               Text(
                 locked ? 'Desbloquea con $requiredXp XP'
                   : seenCount == 0 ? 'Descubre palabras en los bloques para jugar'
                   : 'Con tus $seenCount palabras vistas',
-                style: TextStyle(color: !enabled ? AppColors.muted : AppColors.paper.withValues(alpha: .85))),
+                style: const TextStyle(color: AppColors.muted, fontSize: 13)),
             ])),
-            Icon(locked ? Icons.lock_outline : Icons.play_arrow_rounded,
-              color: !enabled ? AppColors.muted : AppColors.gold, size: 32),
+            if (enabled) const Icon(Icons.arrow_forward_ios_rounded, color: AppColors.muted, size: 16),
           ]),
         ),
       ),

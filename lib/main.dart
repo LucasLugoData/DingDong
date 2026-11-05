@@ -29,14 +29,14 @@ void showMedalToast(String id) {
   if (medal == null) return;
   messengerKey.currentState?.showSnackBar(SnackBar(
     behavior: SnackBarBehavior.floating,
-    backgroundColor: AppColors.ink,
+    backgroundColor: AppColors.surface,
     duration: const Duration(seconds: 4),
     content: Row(children: [
-      CircleAvatar(backgroundColor: medal.color, child: Icon(medal.icon, color: AppColors.ink)),
+      CircleAvatar(backgroundColor: medal.color, child: Icon(medal.icon, color: AppColors.bg)),
       const SizedBox(width: 12),
       Expanded(child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
         const Text('¡Logro conseguido!', style: TextStyle(color: AppColors.gold, fontWeight: FontWeight.w800)),
-        Text(medal.title, style: const TextStyle(color: AppColors.paper, fontSize: 16)),
+        Text(medal.title, style: const TextStyle(color: AppColors.text, fontSize: 16)),
       ])),
     ]),
   ));
@@ -50,7 +50,6 @@ class ZikaApp extends StatelessWidget {
     title: 'Zìkǎ',
     debugShowCheckedModeBanner: false,
     scaffoldMessengerKey: messengerKey,
-    builder: (context, child) => PaperBackground(child: child!),
     theme: buildTheme(),
     home: ListenableBuilder(
       listenable: store,

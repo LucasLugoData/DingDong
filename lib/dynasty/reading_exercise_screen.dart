@@ -221,20 +221,20 @@ class _ScoreBadge extends StatelessWidget {
     child: Container(
       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
       decoration: BoxDecoration(
-        color: AppColors.seal,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.gold, width: 2),
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: AppColors.line),
       ),
       child: Row(mainAxisSize: MainAxisSize.min, children: [
-        const Text('分', style: TextStyle(color: AppColors.gold, fontSize: 22,
-          fontFamilyFallback: cjkFallback, fontWeight: FontWeight.w700)),
+        const Text('PUNTOS', style: TextStyle(color: AppColors.muted, fontSize: 12,
+          letterSpacing: 2, fontWeight: FontWeight.w700)),
         const SizedBox(width: 10),
         TweenAnimationBuilder<double>(
           tween: Tween(end: score.toDouble()),
           duration: const Duration(milliseconds: 400),
           builder: (context, value, _) => Text('${value.round()}',
             key: const ValueKey('reading-score'),
-            style: const TextStyle(color: AppColors.paper, fontSize: 26, fontWeight: FontWeight.w900)),
+            style: const TextStyle(color: AppColors.text, fontSize: 24, fontWeight: FontWeight.w800)),
         ),
         if (streak > 1) ...[
           const SizedBox(width: 10),

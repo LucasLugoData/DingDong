@@ -84,17 +84,16 @@ class _Face extends StatelessWidget {
     decoration: BoxDecoration(
       color: color,
       borderRadius: BorderRadius.circular(28),
-      border: Border.all(color: AppColors.line, width: 1.5),
+      border: Border.all(color: const Color(0xFF8A6A3E), width: 1.2),
       boxShadow: const [BoxShadow(color: Color(0x22000000), blurRadius: 18, offset: Offset(0, 8))],
     ),
     child: Stack(
       children: [
-        Positioned(
-          right: -18, bottom: -10,
-          child: IgnorePointer(child: Opacity(opacity: .13,
-            child: Image.asset('assets/art/dragon.png', width: 150))),
-        ),
-        Positioned.fill(child: child),
+        Positioned.fill(child: CustomPaint(painter: PapyrusPainter(color: color))),
+        Positioned.fill(child: DefaultTextStyle.merge(
+          style: const TextStyle(color: AppColors.ink),
+          child: IconTheme.merge(data: const IconThemeData(color: AppColors.ink), child: child),
+        )),
         Positioned(top: 8, right: 8, child: _FavButton(word: word)),
       ],
     ),
@@ -114,7 +113,7 @@ class _FavButton extends StatelessWidget {
         tooltip: fav ? 'Quitar de favoritas' : 'Añadir a favoritas',
         onPressed: () => store.toggleFavorite(word.id),
         icon: Icon(fav ? Icons.star_rounded : Icons.star_outline_rounded,
-            color: fav ? AppColors.gold : AppColors.muted.withValues(alpha: .6), size: 26),
+            color: fav ? AppColors.seal : AppColors.inkMuted.withValues(alpha: .6), size: 26),
       );
     },
   );
@@ -134,7 +133,7 @@ class _Front extends StatelessWidget {
         child: Center(
           child: FittedBox(
             fit: BoxFit.scaleDown,
-            child: Text(word.hanzi, maxLines: 1, softWrap: false, style: hanziStyle(size)),
+            child: Text(word.hanzi, maxLines: 1, softWrap: false, style: hanziStyle(size).copyWith(color: AppColors.ink)),
           ),
         ),
       );
@@ -161,7 +160,7 @@ class _Back extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontSize: 26,
-                  color: AppColors.accentSoft,
+                  color: AppColors.seal,
                   fontWeight: FontWeight.w500,
                   letterSpacing: .5,
                 ),
@@ -181,9 +180,9 @@ class _Back extends StatelessWidget {
                 TextButton.icon(
                   onPressed: () => showNoteEditor(context, word),
                   style: TextButton.styleFrom(
-                    foregroundColor: AppColors.muted,
+                    foregroundColor: AppColors.inkMuted,
                     shape: const StadiumBorder(),
-                    side: BorderSide(color: AppColors.muted.withValues(alpha: .25)),
+                    side: BorderSide(color: AppColors.inkMuted.withValues(alpha: .4)),
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                   ),
                   icon: const Icon(Icons.add, size: 18),
@@ -209,7 +208,7 @@ class _NoteBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Material(
-    color: Colors.black.withValues(alpha: .14),
+    color: AppColors.ink.withValues(alpha: .08),
     borderRadius: BorderRadius.circular(16),
     child: InkWell(
       borderRadius: BorderRadius.circular(16),
