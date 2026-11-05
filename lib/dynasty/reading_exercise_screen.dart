@@ -218,7 +218,7 @@ class _ScoreBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Center(
-    child: Container(
+    child: FittedBox(fit: BoxFit.scaleDown, child: Container(
       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
       decoration: BoxDecoration(
         color: AppColors.surface,
@@ -241,6 +241,6 @@ class _ScoreBadge extends StatelessWidget {
           Text('racha ×$streak', style: const TextStyle(color: AppColors.gold, fontWeight: FontWeight.w700)),
         ],
       ]),
-    ),
+    )),
   );
 }
