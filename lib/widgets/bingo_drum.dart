@@ -77,23 +77,26 @@ class _DrumPainter extends CustomPainter {
     canvas.drawLine(center + const Offset(-65, 94),
       center + const Offset(65, 94), wire);
     canvas.drawCircle(center, 73, Paint()..color = AppColors.surface);
-    final visible = words.take(8).toList();
+    // Un anillo de hasta 6 bolas y una en el centro: sin solaparse.
+    final visible = words.take(7).toList();
+    final ring = min(visible.length, 6);
     for (var i = 0; i < visible.length; i++) {
       final word = visible[i];
-      final orbit = angle + i * 2 * pi / visible.length;
-      final radius = i.isEven ? 43.0 : 25.0;
-      final position = center + Offset(cos(orbit) * radius, sin(orbit) * radius);
-      canvas.drawCircle(position, 22, Paint()
+      final orbit = angle + i * 2 * pi / max(ring, 1);
+      final position = i < 6
+          ? center + Offset(cos(orbit) * 46, sin(orbit) * 46)
+          : center;
+      canvas.drawCircle(position, 18, Paint()
         ..color = colors[word.id] ?? AppColors.red);
       final text = TextPainter(
         text: TextSpan(style: const TextStyle(color: AppColors.bg,
           fontFamilyFallback: cjkFallback), children: [
-          TextSpan(text: '${word.hanzi}\n', style: const TextStyle(fontSize: 12)),
+          TextSpan(text: '${word.hanzi}\n', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
           TextSpan(text: word.pinyin, style: const TextStyle(fontSize: 8)),
         ]),
         textAlign: TextAlign.center, textDirection: TextDirection.ltr,
         maxLines: 2,
-      )..layout(maxWidth: 42);
+      )..layout(maxWidth: 34);
       text.paint(canvas, position - Offset(text.width / 2, text.height / 2));
     }
     canvas.save();
