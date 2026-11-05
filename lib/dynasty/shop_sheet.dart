@@ -54,6 +54,8 @@ class _ShopSheetState extends State<ShopSheet> {
                     name: passive.name,
                     description: passive.description,
                     seed: index,
+                    imageAsset: 'assets/passives/${passive.id}.png',
+                    rarity: passive.rarity,
                     selected: bought,
                     price: bought ? 'Comprada' : '${run.priceOf(passive)} monedas',
                     onTap: canBuy ? () {

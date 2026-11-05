@@ -1,10 +1,11 @@
-import 'dart:math' as math;
+﻿import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../game/passives.dart';
 import '../theme.dart';
 
-/// Carta de pasiva con acabado de papel antiguo y un boceto a tinta.
+/// Carta imperial con ilustración, sello y marco de laca.
 class PassiveCard extends StatelessWidget {
   const PassiveCard({
     super.key,
@@ -15,6 +16,8 @@ class PassiveCard extends StatelessWidget {
     this.selected = false,
     this.onTap,
     this.seed = 0,
+    this.imageAsset,
+    this.rarity = PassiveRarity.common,
   });
 
   final String hanzi;
@@ -24,91 +27,213 @@ class PassiveCard extends StatelessWidget {
   final bool selected;
   final VoidCallback? onTap;
   final int seed;
+  final String? imageAsset;
+  final PassiveRarity rarity;
+
+  Color get _rarityColor => switch (rarity) {
+    PassiveRarity.common => AppColors.bronze,
+    PassiveRarity.uncommon => const Color(0xFF478C70),
+    PassiveRarity.rare => AppColors.gold,
+    PassiveRarity.legendary => AppColors.seal,
+  };
+
+  Widget _fallback() => CustomPaint(
+    painter: _WatercolorPainter(seed),
+    child: Center(
+      child: Text(
+        hanzi,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: TextStyle(
+          color: AppColors.ink,
+          fontSize: hanzi.length > 1 ? 38 : 52,
+          fontFamilyFallback: cjkFallback,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+    ),
+  );
+
+  Widget _seal() => Container(
+    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 3),
+    decoration: BoxDecoration(
+      color: AppColors.seal,
+      border: Border.all(color: AppColors.accentSoft, width: .6),
+      borderRadius: BorderRadius.circular(2),
+    ),
+    child: Text(
+      hanzi.runes.length == 2
+          ? hanzi.runes.map(String.fromCharCode).join('\n')
+          : hanzi,
+      textAlign: TextAlign.center,
+      style: const TextStyle(
+        color: AppColors.paper,
+        fontFamilyFallback: cjkFallback,
+        fontSize: 16,
+        height: 1.1,
+      ),
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: 150,
       height: 220,
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          child: CustomPaint(
-            painter: _PaperPainter(seed: seed, selected: selected),
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(13, 12, 13, 11),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    height: 72,
-                    child: Center(
-                      child: Text(
-                        hanzi,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          color: AppColors.ink,
-                          fontSize: hanzi.length > 1 ? 38 : 48,
-                          height: 1,
-                          fontFamilyFallback: cjkFallback,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: const Color(0xFF101213),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: selected ? AppColors.gold : AppColors.accentSoft,
+            width: selected ? 2.5 : 1,
+          ),
+          boxShadow: [
+            if (selected || rarity == PassiveRarity.legendary)
+              BoxShadow(
+                color: AppColors.gold.withValues(alpha: selected ? .35 : .17),
+                blurRadius: selected ? 14 : 9,
+                spreadRadius: selected ? 1 : 0,
+              ),
+          ],
+        ),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(8),
+            onTap: onTap,
+            child: CustomPaint(
+              foregroundPainter: const _ImperialFramePainter(),
+              child: Padding(
+                padding: const EdgeInsets.all(7),
+                child: Container(
+                  key: const Key('passive-rarity-frame'),
+                  padding: const EdgeInsets.all(2),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: _rarityColor, width: 1.2),
+                    borderRadius: BorderRadius.circular(4),
                   ),
-                  Text(
-                    name,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      color: AppColors.ink,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 14,
-                    ),
-                  ),
-                  const SizedBox(height: 5),
-                  Expanded(
-                    child: Align(
-                      alignment: Alignment.topCenter,
-                      child: Text(
-                        description,
-                        maxLines: 3,
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: AppColors.ink.withValues(alpha: .82),
-                          fontSize: 11,
-                          height: 1.2,
-                        ),
-                      ),
-                    ),
-                  ),
-                  if (price != null)
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: Container(
-                        constraints: const BoxConstraints(maxWidth: 82),
-                        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: AppColors.seal,
-                          borderRadius: BorderRadius.circular(2),
-                        ),
-                        child: Text(
-                          price!,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            color: AppColors.paper,
-                            fontSize: 10,
-                            fontWeight: FontWeight.w700,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(2),
+                    child: ColoredBox(
+                      color: AppColors.paper,
+                      child: Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          Positioned(
+                            top: 0, left: 0, right: 0, height: 122,
+                            child: Stack(
+                              fit: StackFit.expand,
+                              children: [
+                                if (imageAsset == null)
+                                  _fallback()
+                                else
+                                  Image.asset(
+                                    imageAsset!,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (_, error, stackTrace) => _fallback(),
+                                    frameBuilder: (_, child, frame, loaded) => Stack(
+                                      fit: StackFit.expand,
+                                      children: [
+                                        child,
+                                        Positioned(top: 5, left: 5, child: _seal()),
+                                      ],
+                                    ),
+                                  ),
+                                const Positioned(
+                                  left: 0, right: 0, bottom: 0, height: 26,
+                                  child: IgnorePointer(
+                                    child: DecoratedBox(
+                                      decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                          begin: Alignment.topCenter,
+                                          end: Alignment.bottomCenter,
+                                          colors: [Color(0x00F1E2C2), AppColors.paper],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
+                          Positioned(
+                            top: 116, left: 4, right: 4, bottom: 3,
+                            child: Column(
+                              children: [
+                                Container(
+                                  width: double.infinity,
+                                  height: 19,
+                                  alignment: Alignment.center,
+                                  padding: const EdgeInsets.symmetric(horizontal: 3),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.paperBack,
+                                    border: Border.symmetric(
+                                      horizontal: BorderSide(
+                                        color: AppColors.bronze.withValues(alpha: .5),
+                                        width: .5,
+                                      ),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    name,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
+                                      color: AppColors.ink,
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 2),
+                                Expanded(
+                                  child: Align(
+                                    alignment: Alignment.topCenter,
+                                    child: Text(
+                                      description,
+                                      maxLines: 3,
+                                      overflow: TextOverflow.ellipsis,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color: AppColors.ink.withValues(alpha: .85),
+                                        fontSize: 10,
+                                        height: 1.15,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                if (price != null)
+                                  Align(
+                                    alignment: Alignment.centerRight,
+                                    child: Container(
+                                      constraints: const BoxConstraints(maxWidth: 88),
+                                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                                      decoration: BoxDecoration(
+                                        color: AppColors.seal,
+                                        borderRadius: BorderRadius.circular(2),
+                                      ),
+                                      child: Text(
+                                        price!,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                          color: AppColors.paper,
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                ],
+                  ),
+                ),
               ),
             ),
           ),
@@ -118,110 +243,64 @@ class PassiveCard extends StatelessWidget {
   }
 }
 
-class _PaperPainter extends CustomPainter {
-  _PaperPainter({required this.seed, required this.selected});
+class _ImperialFramePainter extends CustomPainter {
+  const _ImperialFramePainter();
 
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = AppColors.accentSoft
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = .65;
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        (Offset.zero & size).deflate(3.5), const Radius.circular(5),
+      ),
+      paint,
+    );
+    for (final corner in [
+      Offset.zero, Offset(size.width, 0),
+      Offset(0, size.height), Offset(size.width, size.height),
+    ]) {
+      canvas.save();
+      canvas.translate(corner.dx, corner.dy);
+      canvas.scale(corner.dx == 0 ? 1 : -1, corner.dy == 0 ? 1 : -1);
+      final fret = Path()
+        ..moveTo(3, 17)..lineTo(3, 3)..lineTo(17, 3)
+        ..moveTo(6, 12)..lineTo(6, 6)..lineTo(12, 6)
+        ..lineTo(12, 9)..lineTo(9, 9);
+      canvas.drawPath(fret, paint);
+      canvas.restore();
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _ImperialFramePainter oldDelegate) => false;
+}
+
+class _WatercolorPainter extends CustomPainter {
+  const _WatercolorPainter(this.seed);
   final int seed;
-  final bool selected;
 
   @override
   void paint(Canvas canvas, Size size) {
     final random = math.Random(seed);
-    final shape = Path();
-    const steps = 12;
-    for (var i = 0; i <= steps; i++) {
-      final x = size.width * i / steps;
-      final y = i == 0 || i == steps ? 1.5 : 1.5 + random.nextDouble() * 2.5;
-      if (i == 0) { shape.moveTo(x, y); } else { shape.lineTo(x, y); }
-    }
-    for (var i = 0; i <= steps; i++) {
-      final y = size.height * i / steps;
-      final x = i == 0 || i == steps ? size.width - 1.5 : size.width - 1.5 - random.nextDouble() * 2.5;
-      shape.lineTo(x, y);
-    }
-    for (var i = steps; i >= 0; i--) {
-      final x = size.width * i / steps;
-      final y = i == 0 || i == steps ? size.height - 1.5 : size.height - 1.5 - random.nextDouble() * 2.5;
-      shape.lineTo(x, y);
-    }
-    for (var i = steps; i >= 0; i--) {
-      final y = size.height * i / steps;
-      final x = i == 0 || i == steps ? 1.5 : 1.5 + random.nextDouble() * 2.5;
-      shape.lineTo(x, y);
-    }
-    shape.close();
-
-    canvas.drawPath(shape, Paint()..color = AppColors.paper);
-    canvas.save();
-    canvas.clipPath(shape);
-
-    final fiberPaint = Paint()
-      ..color = AppColors.ink.withValues(alpha: .09)
-      ..strokeWidth = .45;
-    for (var i = 0; i < 42; i++) {
-      final x = random.nextDouble() * size.width;
-      final y = random.nextDouble() * size.height;
-      final length = 2 + random.nextDouble() * 9;
-      canvas.drawLine(Offset(x, y), Offset(x + length, y + random.nextDouble() * 1.5), fiberPaint);
-    }
-    _drawSketch(canvas, size, random);
-    canvas.restore();
-
-    final border = Paint()
-      ..color = AppColors.ink.withValues(alpha: selected ? .9 : .72)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = selected ? 2.4 : 1.6;
-    canvas.drawPath(shape, border);
-    final inner = Path()..addRect(Rect.fromLTWH(5, 5, size.width - 10, size.height - 10));
-    canvas.drawPath(inner, Paint()
-      ..color = AppColors.ink.withValues(alpha: .22)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = .55);
-  }
-
-  void _drawSketch(Canvas canvas, Size size, math.Random random) {
-    final paint = Paint()
-      ..color = AppColors.ink.withValues(alpha: .16)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = .8
-      ..strokeCap = StrokeCap.round;
-    final area = Rect.fromLTWH(12, 14, size.width - 24, 48);
-    switch (random.nextInt(3)) {
-      case 0: // Montañas a tinta
-        for (var i = 0; i < 3; i++) {
-          final x = area.left + i * area.width / 3;
-          final path = Path()
-            ..moveTo(x, area.bottom)
-            ..quadraticBezierTo(x + 11, area.top + random.nextDouble() * 8, x + 24, area.bottom)
-            ..moveTo(x + 8, area.bottom - 5)
-            ..quadraticBezierTo(x + 22, area.top + 8, x + 35, area.bottom - 3);
-          canvas.drawPath(path, paint);
-        }
-      case 1: // Muro agrietado
-        canvas.drawRect(area.deflate(5), paint);
-        for (var i = 0; i < 4; i++) {
-          final x = area.left + 12 + i * 27;
-          canvas.drawLine(Offset(x, area.top), Offset(x - 3 + random.nextDouble() * 6, area.bottom), paint);
-        }
-        final crack = Path()
-          ..moveTo(area.center.dx, area.top + 4)
-          ..lineTo(area.center.dx - 5, area.center.dy)
-          ..lineTo(area.center.dx + 2, area.center.dy + 4)
-          ..lineTo(area.center.dx - 3, area.bottom - 3);
-        canvas.drawPath(crack, paint);
-      case 2: // Rollo de bambú
-        for (var i = 0; i < 5; i++) {
-          final x = area.left + 7 + i * 25;
-          canvas.drawLine(Offset(x, area.top + 4), Offset(x, area.bottom - 4), paint);
-          canvas.drawOval(Rect.fromCenter(center: Offset(x, area.top + 4), width: 5, height: 4), paint);
-          canvas.drawOval(Rect.fromCenter(center: Offset(x, area.bottom - 4), width: 5, height: 4), paint);
-        }
-        canvas.drawLine(Offset(area.left + 5, area.top + 12), Offset(area.right - 5, area.top + 12), paint);
-        canvas.drawLine(Offset(area.left + 5, area.bottom - 12), Offset(area.right - 5, area.bottom - 12), paint);
+    canvas.drawRect(Offset.zero & size, Paint()..color = AppColors.paper);
+    for (var i = 0; i < 18; i++) {
+      final center = Offset(random.nextDouble() * size.width,
+          random.nextDouble() * size.height);
+      final radius = 16 + random.nextDouble() * 34;
+      final color = i.isEven ? AppColors.seal : const Color(0xFF334D68);
+      canvas.drawOval(
+        Rect.fromCenter(center: center, width: radius * 2, height: radius * 1.4),
+        Paint()..shader = RadialGradient(
+          colors: [color.withValues(alpha: .13), color.withValues(alpha: 0)],
+        ).createShader(Rect.fromCircle(center: center, radius: radius)),
+      );
     }
   }
 
   @override
-  bool shouldRepaint(covariant _PaperPainter oldDelegate) =>
-      oldDelegate.seed != seed || oldDelegate.selected != selected;
+  bool shouldRepaint(covariant _WatercolorPainter oldDelegate) =>
+      oldDelegate.seed != seed;
 }
