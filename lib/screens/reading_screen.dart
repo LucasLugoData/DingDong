@@ -23,7 +23,7 @@ class ReadingScreen extends StatelessWidget {
             children: [
               Text('Lectura', style: TextStyle(fontSize: 26, fontWeight: FontWeight.w800)),
               SizedBox(height: 4),
-              Text('Toca una palabra para ver su pinyin y mantenla pulsada para ver su significado.',
+              Text('Toca una palabra para ver su pinyin y su significado; el icono 译 traduce la frase.',
                   style: TextStyle(color: AppColors.muted)),
             ],
           ),
@@ -130,31 +130,36 @@ class _ReadingDetailState extends State<_ReadingDetail> {
   Widget _sentence(int i, (String, String, String) s) {
     final showTr = _translation || _open.contains(i);
     final parts = segment(s.$1, _byHanzi);
-    return InkWell(
-      borderRadius: BorderRadius.circular(14),
-      onTap: () => setState(() => _open.contains(i) ? _open.remove(i) : _open.add(i)),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (_pinyin)
-              Text(s.$2, style: const TextStyle(color: AppColors.accentSoft, fontSize: 15)),
-            Wrap(crossAxisAlignment: WrapCrossAlignment.end, children: [
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (_pinyin)
+            Text(s.$2, style: const TextStyle(color: AppColors.accentSoft, fontSize: 15)),
+          Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Expanded(child: Wrap(crossAxisAlignment: WrapCrossAlignment.end, children: [
               for (var j = 0; j < parts.length; j++)
                 _word(parts[j], '$i:$j'),
-            ]),
-            AnimatedSize(
-              duration: const Duration(milliseconds: 200),
-              child: showTr
-                  ? Padding(
-                      padding: const EdgeInsets.only(top: 4),
-                      child: Text(s.$3, style: const TextStyle(color: AppColors.muted, fontSize: 15)),
-                    )
-                  : const SizedBox(width: double.infinity),
+            ])),
+            IconButton(
+              key: ValueKey('translate-$i'),
+              tooltip: 'Traducir frase',
+              onPressed: () => setState(() => _open.contains(i) ? _open.remove(i) : _open.add(i)),
+              icon: Text('译', style: TextStyle(fontSize: 18, fontFamilyFallback: cjkFallback,
+                color: showTr ? AppColors.seal : AppColors.muted)),
             ),
-          ],
-        ),
+          ]),
+          AnimatedSize(
+            duration: const Duration(milliseconds: 200),
+            child: showTr
+                ? Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: Text(s.$3, style: const TextStyle(color: AppColors.muted, fontSize: 15)),
+                  )
+                : const SizedBox(width: double.infinity),
+          ),
+        ],
       ),
     );
   }
@@ -170,15 +175,21 @@ class _ReadingDetailState extends State<_ReadingDetail> {
             Text(word.pinyin,
                 style: const TextStyle(color: AppColors.accentSoft, fontSize: 13)),
           Text(part.text, style: hanziStyle(26).copyWith(height: 1.5)),
+          if (word != null && _openWords.contains(key))
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 110),
+              child: Text(word.meaning, textAlign: TextAlign.center, maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(color: AppColors.muted, fontSize: 11)),
+            ),
         ],
       ),
     );
     if (word == null) {
       return content;
     }
-    return Tooltip(
-      message: word.meaning,
-      triggerMode: TooltipTriggerMode.longPress,
+    return Semantics(
+      label: word.meaning,
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: () => setState(() {
