@@ -1,6 +1,6 @@
 # 027 · Ilustraciones en acuarela de las 14 pasivas
 
-Estado: PENDIENTE
+Estado: APROBADA
 Peldaño inicial: 3
 Revisión: no
 
@@ -48,3 +48,5 @@ Generar con tu herramienta de generación de imágenes una ilustración por pasi
 Si no tienes herramienta de generación de imágenes, NO dibujes sustitutos con código: escribe aquí "sin generación de imágenes" y para.
 
 ## Resultado
+
+Aprobada por `flutter test test/passive_assets_test.dart && flutter analyze lib test` en el peldaño 3 (gpt-6.1-sol medium).
