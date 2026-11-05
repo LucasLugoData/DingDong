@@ -1,6 +1,6 @@
 # 033 · Explosión de puntos estilo casino (widget)
 
-Estado: PENDIENTE
+Estado: APROBADA
 Peldaño inicial: 3
 Revisión: no
 
@@ -37,3 +37,5 @@ Widget `ScoreBurst` que convierte cada `ScoreEvent` (tarea 032) en un espectácu
 ## Dudas
 
 ## Resultado
+
+Aprobada tras arreglo de Claude: el test no contaba el primer fotograma del ticker (+82 ms).
