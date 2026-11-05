@@ -55,8 +55,8 @@ void main() {
   });
 
   test('catalog contains unique medals with presentation metadata', () {
-    expect(achievements, hasLength(20));
-    expect(achievements.map((medal) => medal.id).toSet(), hasLength(20));
+    expect(achievements, hasLength(27));
+    expect(achievements.map((medal) => medal.id).toSet(), hasLength(27));
     for (final medal in achievements) {
       expect(medal.title, isNotEmpty);
       expect(medal.description, isNotEmpty);
@@ -161,7 +161,7 @@ void main() {
 
   test('evaluation is pure and excludes all previously obtained medals', () {
     var xp = 0;
-    for (var level = 1; level < 20; level++) {
+    for (var level = 1; level < 50; level++) {
       xp += xpToNext(level);
     }
     final player = Player(xp: xp, seen: {'a'}, wordStats: {

@@ -21,6 +21,11 @@ int xpToNext(int level) {
 
 int xpFromScore(int score) => (sqrt(max(0, score)) * 12).round();
 
+/// Solitario: crece de forma logarítmica para que los multiplicadores
+/// no regalen decenas de niveles (2000 puntos ≈ 264 XP; 5 M ≈ 940 XP).
+int solitaireXpFromScore(int score) =>
+    (60 * log(1 + max(0, score) / 100) / ln2).round();
+
 int xpPerProgressAnswer(bool correct) => correct ? 5 : 1;
 
 int unlockXp(String deckId, Map<String, int> deckSizes) {

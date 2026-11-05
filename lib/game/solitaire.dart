@@ -19,6 +19,9 @@ abstract class PassiveHooks {
   int priceModifier(int price) => price;
 }
 
+/// Pasivas que se pueden tener a la vez en una partida.
+const maxPassives = 10;
+
 class SolitaireRun {
   /// [words] contiene únicamente las palabras vistas por el jugador.
   SolitaireRun(
@@ -29,8 +32,8 @@ class SolitaireRun {
     if (words.isEmpty) {
       throw ArgumentError.value(words, 'words', 'Debe haber palabras vistas');
     }
-    if (passives.length > 5) {
-      throw ArgumentError.value(passives, 'passives', 'Máximo cinco pasivas');
+    if (passives.length > maxPassives) {
+      throw ArgumentError.value(passives, 'passives', 'Máximo $maxPassives pasivas');
     }
     final cards = <Word>[];
     while (cards.length < 100) {
@@ -95,7 +98,7 @@ class SolitaireRun {
   }
 
   bool buy(PassiveHooks passive) {
-    if (!isShopTime || _passives.length >= 5) return false;
+    if (!isShopTime || _passives.length >= maxPassives) return false;
     final price = priceOf(passive);
     if (coins < price) return false;
     coins -= price;

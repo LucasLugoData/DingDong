@@ -5,6 +5,7 @@ import 'screens/home_screen.dart';
 import 'screens/onboarding_screen.dart';
 import 'screens/reading_screen.dart';
 import 'screens/word_list_screen.dart';
+import 'game/achievements.dart';
 import 'game/player.dart';
 import 'store.dart';
 import 'theme.dart';
@@ -13,10 +14,32 @@ export 'dynasty/dynasty_shell.dart';
 
 late AppStore store;
 
+/// Para mostrar avisos (p. ej. logro conseguido) desde cualquier pantalla.
+final messengerKey = GlobalKey<ScaffoldMessengerState>();
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   store = await AppStore.load();
+  store.onMedalUnlocked = showMedalToast;
   runApp(const ZikaApp());
+}
+
+void showMedalToast(String id) {
+  final medal = achievements.where((m) => m.id == id).firstOrNull;
+  if (medal == null) return;
+  messengerKey.currentState?.showSnackBar(SnackBar(
+    behavior: SnackBarBehavior.floating,
+    backgroundColor: AppColors.ink,
+    duration: const Duration(seconds: 4),
+    content: Row(children: [
+      CircleAvatar(backgroundColor: medal.color, child: Icon(medal.icon, color: AppColors.ink)),
+      const SizedBox(width: 12),
+      Expanded(child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+        const Text('¡Logro conseguido!', style: TextStyle(color: AppColors.gold, fontWeight: FontWeight.w800)),
+        Text(medal.title, style: const TextStyle(color: AppColors.paper, fontSize: 16)),
+      ])),
+    ]),
+  ));
 }
 
 class ZikaApp extends StatelessWidget {
@@ -26,6 +49,7 @@ class ZikaApp extends StatelessWidget {
   Widget build(BuildContext context) => MaterialApp(
     title: 'Zìkǎ',
     debugShowCheckedModeBanner: false,
+    scaffoldMessengerKey: messengerKey,
     theme: buildTheme(),
     home: ListenableBuilder(
       listenable: store,

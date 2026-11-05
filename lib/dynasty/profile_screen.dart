@@ -104,8 +104,17 @@ class ProfileScreen extends StatelessWidget {
                     child: Icon(medal.icon, color: unlocked ? AppColors.bg : AppColors.muted)),
                   title: Text(medal.title, style: TextStyle(color: unlocked ? AppColors.text : AppColors.muted)),
                   subtitle: Text(medal.description),
-                  trailing: unlocked ? Icon(featured ? Icons.star : Icons.star_border,
-                    color: featured ? AppColors.gold : AppColors.muted) : const Icon(Icons.lock_outline),
+                  trailing: unlocked
+                    ? (featured
+                        ? FilledButton.tonal(
+                            key: ValueKey('equip-${medal.id}'),
+                            onPressed: () => store.setFeaturedMedal(null),
+                            child: const Text('Equipada'))
+                        : OutlinedButton(
+                            key: ValueKey('equip-${medal.id}'),
+                            onPressed: () => store.setFeaturedMedal(medal.id),
+                            child: const Text('Equipar')))
+                    : const Icon(Icons.lock_outline),
                   onTap: unlocked ? () => store.setFeaturedMedal(featured ? null : medal.id) : null,
                 );
               },

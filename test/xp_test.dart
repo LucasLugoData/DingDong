@@ -126,4 +126,10 @@ void main() {
     expect(store.player.lastBonusAt, date);
     expect(store.bonusMode, isNull);
   });
+
+  test('solitario convierte puntos en XP con rendimientos decrecientes', () {
+    expect(solitaireXpFromScore(0), 0);
+    expect(solitaireXpFromScore(5400000), lessThan(1000));
+    expect(solitaireXpFromScore(2000), greaterThan(solitaireXpFromScore(100)));
+  });
 }

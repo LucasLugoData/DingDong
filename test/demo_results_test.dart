@@ -67,7 +67,7 @@ void main() {
       await tapTile(tester, 'right', i);
     }
     expect(find.byType(ResultsScreen), findsOneWidget);
-    expect(app.store.player.xp, xpFromScore(run.score.round()));
+    expect(app.store.player.xp, solitaireXpFromScore(run.score.round()));
     expect(app.store.player.xp, greaterThan(0));
     expect(run.finalScore, run.score);
     expect(app.store.player.gamesPlayed['cards'], 1);
@@ -116,10 +116,10 @@ void main() {
       expect(find.text(win ? 'Acierto ×2' : 'Fallo ×0.75'), findsOneWidget);
       await tester.tap(find.text('Canjear XP'));
       await tester.pumpAndSettle();
-      expect(app.store.player.xp, (xpFromScore(100000) * (win ? 2 : .75)).round());
+      expect(app.store.player.xp, (solitaireXpFromScore(100000) * (win ? 2 : .75)).round());
       expect(app.store.player.gamesPlayed['cards'], 1);
       expect(app.store.player.medals.contains('roulette_win'), win);
-      expect(app.store.player.medals, containsAll(['solitaire_win', 'solitaire_100k', 'level_5']));
+      expect(app.store.player.medals, containsAll(['solitaire_win', 'solitaire_100k', 'level_2']));
       expect(tester.takeException(), isNull);
     });
   }
@@ -137,7 +137,7 @@ void main() {
     final middle = tester.widget<LinearProgressIndicator>(find.byType(LinearProgressIndicator)).value!;
     expect(middle, greaterThan(initial));
     await tester.pumpAndSettle();
-    expect(app.store.player.xp, xpFromScore(100) * 2);
+    expect(app.store.player.xp, solitaireXpFromScore(100) * 2);
     expect(find.byType(Roulette), findsNothing);
   });
 

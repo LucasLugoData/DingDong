@@ -138,13 +138,13 @@ void main() {
     expect(game.coins, 20);
     expect(game.buy(TestPassive(price: 10)), isTrue);
     expect(game.coins, 12);
-    for (var i = 0; i < 3; i++) {
+    for (var i = 0; i < maxPassives - 2; i++) {
       expect(game.buy(TestPassive(price: 0)), isTrue);
     }
     expect(game.coins, 12);
-    expect(game.passives, hasLength(5));
+    expect(game.passives, hasLength(maxPassives));
     expect(game.buy(TestPassive(price: 0)), isFalse);
-    expect(() => run(passives: List.generate(6, (_) => TestPassive())),
+    expect(() => run(passives: List.generate(maxPassives + 1, (_) => TestPassive())),
         throwsArgumentError);
   });
 

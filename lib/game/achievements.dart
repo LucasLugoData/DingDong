@@ -24,10 +24,20 @@ List<Achievement> blockMedals(String deckId) => [
   _blockMedal(deckId, 'gold', 'Oro', 'Has dominado todas las palabras del bloque.', AppColors.gold, Icons.workspace_premium),
 ];
 
-const _levelAchievements = [
-  Achievement('level_5', 'Nivel 5', 'Alcanza el nivel 5.', AppColors.blue, Icons.trending_up),
-  Achievement('level_10', 'Nivel 10', 'Alcanza el nivel 10.', AppColors.green, Icons.trending_up),
-  Achievement('level_20', 'Nivel 20', 'Alcanza el nivel 20.', AppColors.gold, Icons.trending_up),
+Achievement _level(int level, String title, Color color) => Achievement(
+  'level_$level', title, 'Alcanza el nivel $level.', color, Icons.trending_up);
+
+final _levelAchievements = [
+  _level(2, 'Primer trazo', AppColors.bronze),
+  _level(3, 'Aprendiz de escriba', AppColors.bronze),
+  _level(5, 'Nivel 5', AppColors.blue),
+  _level(10, 'Nivel 10', AppColors.green),
+  _level(15, 'Letrado', AppColors.silver),
+  _level(20, 'Nivel 20', AppColors.gold),
+  _level(25, 'Mandarín', AppColors.lilac),
+  _level(30, 'Gran secretario', AppColors.orange),
+  _level(40, 'Consejero imperial', AppColors.red),
+  _level(50, 'Hijo del Cielo', AppColors.seal),
 ];
 
 const _eventAchievements = [

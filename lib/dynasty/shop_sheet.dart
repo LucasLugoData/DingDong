@@ -41,7 +41,7 @@ class _ShopSheetState extends State<ShopSheet> {
               child: Row(children: List.generate(_offers.length, (index) {
                 final passive = _offers[index];
                 final bought = _bought.contains(passive.id);
-                final canBuy = !bought && run.passives.length < 5 &&
+                final canBuy = !bought && run.passives.length < maxPassives &&
                     run.coins >= run.priceOf(passive);
                 return Padding(
                   padding: EdgeInsets.only(right: index == _offers.length - 1 ? 0 : 12),
@@ -68,7 +68,7 @@ class _ShopSheetState extends State<ShopSheet> {
             ),
           ),
           const SizedBox(height: 12),
-          Text('${run.passives.length}/5 pasivas'),
+          Text('${run.passives.length}/$maxPassives pasivas'),
           const SizedBox(height: 12),
           FilledButton(onPressed: () => Navigator.pop(context),
             child: const Text('Continuar')),

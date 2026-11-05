@@ -48,7 +48,8 @@ class _ResultsScreenState extends State<ResultsScreen> {
   void _redeem() {
     if (_earned != null || (_rouletteOpen && _rouletteWon == null)) return;
     final multiplier = _rouletteWon == null ? 1 : _rouletteWon! ? 2 : .75;
-    final baseXp = widget.passed ? (xpFromScore(widget.score) * multiplier).round() : 0;
+    final base = widget.isSolitaire ? solitaireXpFromScore(widget.score) : xpFromScore(widget.score);
+    final baseXp = widget.passed ? (base * multiplier).round() : 0;
     final earned = store.grantXp(widget.gameMode, baseXp);
     for (final id in evaluate(store.player, store.wordIdsByDeck, event: {
       ...widget.event,
