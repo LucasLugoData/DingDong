@@ -21,18 +21,18 @@ void main() {
 
     expect(find.text('Desbloquea con ${unlockXp('hsk2', {
       for (final entry in app.store.wordIdsByDeck.entries) entry.key: entry.value.length,
-    })} XP'), findsOneWidget);
-    expect(find.byIcon(Icons.lock_outline), findsNWidgets(3)); // HSK2-4
+    })} XP'), findsNWidgets(2)); // Solitario + HSK2
+    expect(find.byIcon(Icons.lock_outline), findsNWidgets(4)); // Solitario + HSK2-4
 
     app.store.player.xp = unlockXp('hsk2', {
       for (final entry in app.store.wordIdsByDeck.entries) entry.key: entry.value.length,
     });
     app.store.notifyListeners();
     await tester.pumpAndSettle();
-    await tester.tap(find.text('HSK 2'));
-    await tester.pumpAndSettle();
-
-    expect(find.text('Progreso'), findsOneWidget);
-    expect(find.text('Solitario'), findsOneWidget);
+    expect(find.text('SOLITARIO'), findsOneWidget);
+    expect(find.byIcon(Icons.lock_outline), findsNWidgets(2)); // HSK3-4
+    await tester.scrollUntilVisible(find.text('Todo'), 200);
+    expect(tester.getTopLeft(find.text('Todo')).dy,
+      greaterThan(tester.getTopLeft(find.text('Favoritas', skipOffstage: false)).dy)); // Todo al final
   });
 }

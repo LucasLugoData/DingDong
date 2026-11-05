@@ -117,9 +117,10 @@ void main() {
     });
     await tester.pumpWidget(MaterialApp(theme: buildTheme(),
       home: const Scaffold(body: CardsHome())));
-    await tester.tap(find.text('HSK 1'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Solitario'));
+    app.store.player.seen.add(app.store.allWords.first.id);
+    app.store.notifyListeners();
+    await tester.pump();
+    await tester.tap(find.byKey(const ValueKey('solitaire-banner')));
     await tester.pumpAndSettle();
     expect(find.byType(SolitaireScreen), findsOneWidget);
     expect(find.byType(FlashCard), findsOneWidget);

@@ -20,16 +20,28 @@ class CardsHome extends StatelessWidget {
       final all = [...store.allWords.where((w) => w.isCustom || seen.contains(w.id))]
         ..sort((a, b) => a.sortKey.compareTo(b.sortKey));
       final decks = [
-        Deck(Deck.all, 'Todo', 'Todas las tarjetas vistas y las propias'),
         ...Deck.list.where((d) => d.id.startsWith('hsk')),
         ...Deck.list.where((d) => d.id == Deck.custom || d.id == Deck.favorites),
+        Deck(Deck.all, 'Todo', 'Todas las tarjetas vistas y las propias'),
       ];
+      final solitaireXp = unlockXp('hsk2', sizes);
+      final seenWords = [...store.allWords.where((w) => seen.contains(w.id))]
+        ..sort((a, b) => a.sortKey.compareTo(b.sortKey));
       return ListView(
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
         children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: 12),
-            child: Text('Vistas: ${store.player.seen.length}', style: const TextStyle(color: AppColors.muted)),
+          _SolitaireBanner(
+            seenCount: seenWords.length,
+            locked: store.player.xp < solitaireXp,
+            requiredXp: solitaireXp,
+            onOpen: () => Navigator.of(context).push(MaterialPageRoute(
+              builder: (_) => SolitaireScreen(words: seenWords),
+            )),
+          ),
+          const Padding(
+            padding: EdgeInsets.fromLTRB(4, 18, 4, 8),
+            child: Text('Estudio por bloques',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: AppColors.muted)),
           ),
           for (final deck in decks)
             _Block(
@@ -37,46 +49,22 @@ class CardsHome extends StatelessWidget {
               words: deck.id == Deck.all ? all : store.wordsOf(deck.id),
               locked: deck.id.startsWith('hsk') && deck.id != 'hsk1' && store.player.xp < unlockXp(deck.id, sizes),
               requiredXp: unlockXp(deck.id, sizes),
-              onOpen: () => _chooseMode(context, deck, deck.id == Deck.all ? all : store.wordsOf(deck.id)),
+              onOpen: () => _openProgress(context, deck, deck.id == Deck.all ? all : store.wordsOf(deck.id)),
             ),
         ],
       );
     },
   );
 
-  void _chooseMode(BuildContext context, Deck deck, List<Word> words) {
-    final threshold = unlockXp('hsk2', {
-      for (final entry in store.wordIdsByDeck.entries) entry.key: entry.value.length,
-    });
-    if (store.player.xp < threshold) {
-      _openProgress(context, deck, words);
-      return;
-    }
-    showModalBottomSheet<void>(
-      context: context,
-      builder: (sheetContext) => SafeArea(
-        child: Column(mainAxisSize: MainAxisSize.min, children: [
-          ListTile(title: const Text('Progreso'), leading: const Icon(Icons.trending_up), onTap: () {
-            Navigator.pop(sheetContext);
-            _openProgress(context, deck, words);
-          }),
-          ListTile(title: const Text('Solitario'), leading: const Icon(Icons.style), onTap: () {
-            Navigator.pop(sheetContext);
-            Navigator.of(context).push(MaterialPageRoute(
-              builder: (_) => SolitaireScreen(words: words),
-            ));
-          }),
-        ]),
-      ),
-    );
-  }
-
   void _openProgress(BuildContext context, Deck deck, List<Word> words) {
     var earnedXp = 0;
     Navigator.of(context).push(MaterialPageRoute(builder: (_) => StudyScreen(
       deckId: deck.id,
       words: words,
-      onAnswer: (_, correct) => earnedXp += xpPerProgressAnswer(correct),
+      onAnswer: (word, correct) {
+        earnedXp += xpPerProgressAnswer(correct);
+        if (!word.isCustom) store.recordAnswer(word.id, correct, see: true);
+      },
       onFinish: () {
         store.grantXp('cards', earnedXp);
         for (final id in evaluate(store.player, store.wordIdsByDeck)) {
@@ -120,6 +108,53 @@ class _Block extends StatelessWidget {
             ]),
             const SizedBox(height: 6),
             Text(locked ? 'Desbloquea con $requiredXp XP' : '${words.length} tarjetas', style: const TextStyle(color: AppColors.muted)),
+          ]),
+        ),
+      ),
+    );
+  }
+}
+
+/// Apartado especial: Solitario con todas las palabras vistas.
+class _SolitaireBanner extends StatelessWidget {
+  const _SolitaireBanner({required this.seenCount, required this.locked, required this.requiredXp, required this.onOpen});
+  final int seenCount;
+  final bool locked;
+  final int requiredXp;
+  final VoidCallback onOpen;
+
+  @override
+  Widget build(BuildContext context) {
+    final enabled = !locked && seenCount > 0;
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        key: const ValueKey('solitaire-banner'),
+        onTap: enabled ? onOpen : null,
+        borderRadius: BorderRadius.circular(18),
+        child: Ink(
+          padding: const EdgeInsets.all(18),
+          decoration: BoxDecoration(
+            color: locked ? AppColors.surface : AppColors.seal,
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(color: AppColors.gold.withValues(alpha: locked ? .25 : .9), width: 2),
+          ),
+          child: Row(children: [
+            Text('龍', style: hanziStyle(44).copyWith(
+              color: locked ? AppColors.muted : AppColors.gold)),
+            const SizedBox(width: 14),
+            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text('SOLITARIO', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900, letterSpacing: 2,
+                color: locked ? AppColors.muted : AppColors.paper)),
+              const SizedBox(height: 4),
+              Text(
+                locked ? 'Desbloquea con $requiredXp XP'
+                  : seenCount == 0 ? 'Descubre palabras en los bloques para jugar'
+                  : 'Con tus $seenCount palabras vistas',
+                style: TextStyle(color: locked ? AppColors.muted : AppColors.paper.withValues(alpha: .85))),
+            ])),
+            Icon(locked ? Icons.lock_outline : Icons.play_arrow_rounded,
+              color: locked ? AppColors.muted : AppColors.gold, size: 32),
           ]),
         ),
       ),

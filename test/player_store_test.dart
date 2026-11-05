@@ -35,8 +35,9 @@ void main() {
   test('player mutations persist and reload', () async {
     SharedPreferences.setMockInitialValues({});
     var store = await AppStore.load();
-    store.recordAnswer('a', true);
+    store.recordAnswer('a', true, see: true);
     store.recordAnswer('a', false);
+    store.recordAnswer('c', true);
     store.markSeen('b');
     store.setName('Ariel');
     store.setMode(AppMode.dynasty);
@@ -49,6 +50,7 @@ void main() {
     expect(store.player.xp, 15);
     expect(store.player.gamesPlayed['cards'], 1);
     expect(store.player.seen, containsAll(['a', 'b']));
+    expect(store.player.seen, isNot(contains('c')));
     expect(store.player.wordStats['a'], (hits: 1, misses: 1));
     expect(store.player.medals, contains('first'));
     expect(store.player.featuredMedal, 'first');

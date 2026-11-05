@@ -25,8 +25,12 @@ class StudySession {
   final int total;
   bool shuffled;
   int index = 0;
-  int knownCount = 0;
-  int learningCount = 0;
+  final Set<String> _known = {};
+  final Set<String> _learning = {};
+
+  /// Palabras distintas: repetir la misma fallada no suma de nuevo.
+  int get knownCount => _known.length;
+  int get learningCount => _learning.length;
   Word? _pinyinAnchor;
 
   bool get isDone => index >= queue.length;
@@ -92,9 +96,9 @@ class StudySession {
     final w = current;
     if (w == null) return;
     if (correct) {
-      knownCount++;
+      if (!_learning.contains(w.id)) _known.add(w.id);
     } else {
-      learningCount++;
+      _learning.add(w.id);
       final at = min(index + 1 + Srs.relearnGap, queue.length);
       queue.insert(at, w);
     }

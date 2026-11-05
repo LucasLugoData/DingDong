@@ -125,13 +125,14 @@ class AppStore extends ChangeNotifier {
     _savePlayer();
   }
 
-  void recordAnswer(String wordId, bool correct) {
+  /// Las vistas solo se desbloquean en el modo tarjetas ([see] a true).
+  void recordAnswer(String wordId, bool correct, {bool see = false}) {
     final old = player.wordStats[wordId] ?? (hits: 0, misses: 0);
     player.wordStats[wordId] = (
       hits: old.hits + (correct ? 1 : 0),
       misses: old.misses + (correct ? 0 : 1),
     );
-    player.seen.add(wordId);
+    if (see) player.seen.add(wordId);
     _savePlayer();
   }
 
@@ -168,8 +169,13 @@ class AppStore extends ChangeNotifier {
     return awarded;
   }
 
+  /// Se llama con cada logro nuevo (la app muestra un aviso).
+  void Function(String id)? onMedalUnlocked;
+
   void unlockMedal(String id) {
-    if (player.medals.add(id)) _savePlayer();
+    if (!player.medals.add(id)) return;
+    _savePlayer();
+    onMedalUnlocked?.call(id);
   }
 
   void setFeaturedMedal(String? id) {
