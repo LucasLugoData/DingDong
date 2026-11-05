@@ -5,6 +5,7 @@ import '../game/player.dart';
 import '../game/xp.dart';
 import '../main.dart' show store;
 import '../theme.dart';
+import '../widgets/achievement_medal.dart';
 import '../widgets/mascot.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -46,8 +47,8 @@ class ProfileScreen extends StatelessWidget {
                   child: Padding(padding: const EdgeInsets.all(8), child: Column(children: [
                     const Icon(Icons.workspace_premium_outlined, color: AppColors.gold),
                     const SizedBox(height: 6),
-                    Wrap(spacing: 3, children: [for (final medal in earned.take(4))
-                      CircleAvatar(radius: 6, backgroundColor: medal.color)]),
+                    Wrap(spacing: 3, children: [for (final medal in earned.take(3))
+                      AchievementMedal(medal: medal, unlocked: true, size: 22)]),
                   ])),
                 ),
               ]),
@@ -85,37 +86,82 @@ class ProfileScreen extends StatelessWidget {
     await showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
+      backgroundColor: const Color(0xFF101213),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        side: BorderSide(color: AppColors.accentSoft),
+      ),
+      clipBehavior: Clip.antiAlias,
       builder: (context) => SafeArea(child: SizedBox(
         height: MediaQuery.sizeOf(context).height * .78,
         child: ListenableBuilder(
           listenable: store,
           builder: (context, _) => Column(children: [
-            const Padding(padding: EdgeInsets.all(16), child: Text('Logros',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold))),
-            Expanded(child: ListView.builder(
+            Container(
+              margin: const EdgeInsets.fromLTRB(24, 20, 24, 8),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(colors: [
+                  Color(0xFF281614), AppColors.seal, Color(0xFF281614),
+                ]),
+                border: Border.all(color: AppColors.accentSoft, width: .7),
+              ),
+              child: const Text('Logros', textAlign: TextAlign.center,
+                style: TextStyle(color: AppColors.gold, fontSize: 24,
+                  fontWeight: FontWeight.bold, letterSpacing: 3)),
+            ),
+            Text('${achievements.where((medal) => store.player.medals.contains(medal.id)).length} / ${achievements.length}',
+              style: const TextStyle(color: AppColors.accentSoft, fontSize: 13)),
+            const SizedBox(height: 12),
+            Expanded(child: GridView.builder(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3, mainAxisExtent: 144,
+                crossAxisSpacing: 8, mainAxisSpacing: 12,
+              ),
               itemCount: achievements.length,
               itemBuilder: (context, index) {
                 final medal = achievements[index];
                 final unlocked = store.player.medals.contains(medal.id);
                 final featured = store.player.featuredMedal == medal.id;
-                final color = unlocked ? medal.color : AppColors.line;
-                return ListTile(
-                  leading: CircleAvatar(backgroundColor: color,
-                    child: Icon(medal.icon, color: unlocked ? AppColors.bg : AppColors.muted)),
-                  title: Text(medal.title, style: TextStyle(color: unlocked ? AppColors.text : AppColors.muted)),
-                  subtitle: Text(medal.description),
-                  trailing: unlocked
-                    ? (featured
-                        ? FilledButton.tonal(
-                            key: ValueKey('equip-${medal.id}'),
-                            onPressed: () => store.setFeaturedMedal(null),
-                            child: const Text('Equipada'))
-                        : OutlinedButton(
-                            key: ValueKey('equip-${medal.id}'),
-                            onPressed: () => store.setFeaturedMedal(medal.id),
-                            child: const Text('Equipar')))
-                    : const Icon(Icons.lock_outline),
-                  onTap: unlocked ? () => store.setFeaturedMedal(featured ? null : medal.id) : null,
+                return Tooltip(
+                  message: medal.description,
+                  triggerMode: TooltipTriggerMode.tap,
+                  child: Semantics(
+                    button: true,
+                    selected: featured,
+                    child: InkWell(
+                      key: unlocked ? ValueKey('equip-${medal.id}') : null,
+                      borderRadius: BorderRadius.circular(8),
+                      onTap: unlocked
+                        ? () => store.setFeaturedMedal(featured ? null : medal.id)
+                        : null,
+                      child: Column(children: [
+                        Stack(children: [
+                          AchievementMedal(medal: medal, unlocked: unlocked),
+                          if (featured)
+                            Positioned(
+                              right: 0, bottom: 2,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                                decoration: BoxDecoration(
+                                  color: AppColors.seal,
+                                  border: Border.all(color: AppColors.accentSoft, width: .6),
+                                ),
+                                child: const Text('装备', style: TextStyle(
+                                  color: AppColors.paper, fontSize: 11,
+                                  fontFamilyFallback: cjkFallback)),
+                              ),
+                            ),
+                        ]),
+                        const SizedBox(height: 6),
+                        Text(medal.title, maxLines: 2,
+                          overflow: TextOverflow.ellipsis, textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 12, height: 1.25,
+                            color: unlocked ? AppColors.paper : AppColors.muted)),
+                      ]),
+                    ),
+                  ),
                 );
               },
             )),

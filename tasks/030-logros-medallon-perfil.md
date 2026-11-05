@@ -1,6 +1,6 @@
 # 030 · Medallón imperial y hoja de Logros
 
-Estado: PENDIENTE
+Estado: APROBADA
 Peldaño inicial: 3
 Revisión: no
 
@@ -35,3 +35,5 @@ PROHIBIDO tocar la tarjeta de papiro de memorizar, `lib/theme.dart`, `PassiveCar
 ## Dudas
 
 ## Resultado
+
+Aprobada por `flutter test test/achievement_medal_test.dart test/profile_test.dart && flutter analyze lib test` en el peldaño 3 (gpt-6.1-sol medium).
