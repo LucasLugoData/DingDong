@@ -84,11 +84,16 @@ class _Face extends StatelessWidget {
     decoration: BoxDecoration(
       color: color,
       borderRadius: BorderRadius.circular(28),
-      border: Border.all(color: Colors.white.withValues(alpha: .05)),
-      boxShadow: const [BoxShadow(color: Color(0x33000000), blurRadius: 30, offset: Offset(0, 12))],
+      border: Border.all(color: AppColors.line, width: 1.5),
+      boxShadow: const [BoxShadow(color: Color(0x22000000), blurRadius: 18, offset: Offset(0, 8))],
     ),
     child: Stack(
       children: [
+        Positioned(
+          right: -18, bottom: -10,
+          child: IgnorePointer(child: Opacity(opacity: .13,
+            child: Image.asset('assets/art/dragon.png', width: 150))),
+        ),
         Positioned.fill(child: child),
         Positioned(top: 8, right: 8, child: _FavButton(word: word)),
       ],

@@ -30,6 +30,12 @@ class CardsHome extends StatelessWidget {
       return ListView(
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
         children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(18),
+            child: Image.asset('assets/art/pagoda.png', fit: BoxFit.cover,
+              height: 130, width: double.infinity, filterQuality: FilterQuality.medium),
+          ),
+          const SizedBox(height: 14),
           _SolitaireBanner(
             seenCount: seenWords.length,
             locked: store.player.xp < solitaireXp,
@@ -135,26 +141,33 @@ class _SolitaireBanner extends StatelessWidget {
         child: Ink(
           padding: const EdgeInsets.all(18),
           decoration: BoxDecoration(
-            color: locked ? AppColors.surface : AppColors.seal,
+            color: enabled ? AppColors.seal : AppColors.surface,
             borderRadius: BorderRadius.circular(18),
-            border: Border.all(color: AppColors.gold.withValues(alpha: locked ? .25 : .9), width: 2),
+            border: Border.all(color: AppColors.gold.withValues(alpha: !enabled ? .25 : .9), width: 2),
           ),
           child: Row(children: [
-            Text('龍', style: hanziStyle(44).copyWith(
-              color: locked ? AppColors.muted : AppColors.gold)),
+            Opacity(
+              opacity: enabled ? 1 : .45,
+              child: Container(
+                width: 64, height: 64,
+                decoration: const BoxDecoration(color: AppColors.paper, shape: BoxShape.circle),
+                padding: const EdgeInsets.all(4),
+                child: Image.asset('assets/art/dragon.png'),
+              ),
+            ),
             const SizedBox(width: 14),
             Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text('SOLITARIO', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900, letterSpacing: 2,
-                color: locked ? AppColors.muted : AppColors.paper)),
+                color: !enabled ? AppColors.muted : AppColors.paper)),
               const SizedBox(height: 4),
               Text(
                 locked ? 'Desbloquea con $requiredXp XP'
                   : seenCount == 0 ? 'Descubre palabras en los bloques para jugar'
                   : 'Con tus $seenCount palabras vistas',
-                style: TextStyle(color: locked ? AppColors.muted : AppColors.paper.withValues(alpha: .85))),
+                style: TextStyle(color: !enabled ? AppColors.muted : AppColors.paper.withValues(alpha: .85))),
             ])),
             Icon(locked ? Icons.lock_outline : Icons.play_arrow_rounded,
-              color: locked ? AppColors.muted : AppColors.gold, size: 32),
+              color: !enabled ? AppColors.muted : AppColors.gold, size: 32),
           ]),
         ),
       ),

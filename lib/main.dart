@@ -50,6 +50,7 @@ class ZikaApp extends StatelessWidget {
     title: 'Zìkǎ',
     debugShowCheckedModeBanner: false,
     scaffoldMessengerKey: messengerKey,
+    builder: (context, child) => PaperBackground(child: child!),
     theme: buildTheme(),
     home: ListenableBuilder(
       listenable: store,
